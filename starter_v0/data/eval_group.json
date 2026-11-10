@@ -1,7 +1,109 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "10 team-authored cases for CP4: 5 single-turn and 5 multi-turn cases, including routing to the added similar_posts tool.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_similar_posts_by_reference_account",
+      "phase": "B", "suite": "group",
+      "query": "Tìm các bài đăng trên X tương tự những bài gần đây của Andrej Karpathy.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "similar_posts", "args": {"reference_screenname": "karpathy"}}]},
+      "metadata": {"what_it_tests": "Route yêu cầu tìm bài tương tự nội dung một tài khoản tới tool similar_posts mới, map Andrej Karpathy thành karpathy."}
+    },
+    {
+      "id": "G02_news_topic_timeframe",
+      "phase": "B", "suite": "group",
+      "query": "Tìm tin tức về xe điện trong tháng này.",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "xe điện", "topic": "news", "timeframe": "month"}}]},
+      "metadata": {"what_it_tests": "Trích chủ đề và timeframe=month từ yêu cầu tin tức trong tháng này."}
+    },
+    {
+      "id": "G03_posts_about_topic_not_user_timeline",
+      "phase": "B", "suite": "group",
+      "query": "Trên Twitter, mọi người đang nói gì về VinFast?",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "VinFast"}}]},
+      "metadata": {"what_it_tests": "Phân biệt bài viết về chủ đề với timeline của một tài khoản."}
+    },
+    {
+      "id": "G04_missing_person_for_timeline",
+      "phase": "B", "suite": "group",
+      "query": "Cho mình xem 7 tweet mới nhất.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"what_it_tests": "Khi thiếu tài khoản cần hỏi lại thay vì tự đoán; đồng thời giữ số lượng 7."}
+    },
+    {
+      "id": "G05_no_tool_greeting",
+      "phase": "B", "suite": "group",
+      "query": "Chào bạn, hôm nay bạn khỏe không?",
+      "failure_type": "unnecessary_tool",
+      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
+      "metadata": {"what_it_tests": "Lời chào xã giao không cần công cụ nghiên cứu."}
+    },
+    {
+      "id": "G06_multiturn_fill_timeline_account",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tóm tắt 4 tweet mới nhất giúp mình"},
+        {"role": "user", "content": "Của Satya Nadella nhé"},
+        {"role": "user", "content": "Đúng, lấy 4 bài gần nhất"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "satyanadella", "limit": 4}}]},
+      "metadata": {"what_it_tests": "Qua nhiều lượt, bổ sung tài khoản và giữ limit ban đầu."}
+    },
+    {
+      "id": "G07_multiturn_switch_social_to_web",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm các tweet về pin thể rắn trên Twitter"},
+        {"role": "user", "content": "Đổi sang tìm tin trên web, trong tuần này"},
+        {"role": "user", "content": "Chỉ xem tin về pin thể rắn thôi"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "pin thể rắn", "topic": "news", "timeframe": "week"}}]},
+      "metadata": {"what_it_tests": "Theo chỉ dẫn đổi nguồn sang web, giữ chủ đề và timeframe của ngữ cảnh."}
+    },
+    {
+      "id": "G08_multiturn_correct_social_search_type",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tìm tweet về AI agents"},
+        {"role": "user", "content": "Lấy bài phổ biến nhất, không cần bài mới nhất"},
+        {"role": "user", "content": "Vẫn chủ đề AI agents nhé"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "AI agents", "search_type": "Top"}}]},
+      "metadata": {"what_it_tests": "Mang chủ đề qua lượt và cập nhật thứ tự tìm kiếm thành Top."}
+    },
+    {
+      "id": "G09_multiturn_url_after_clarification",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Đọc và tóm tắt bài viết này giúp mình"},
+        {"role": "user", "content": "https://openai.com/index/introducing-gpt-4-1/"},
+        {"role": "user", "content": "Tóm tắt đúng bài ở link đó"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://openai.com/index/introducing-gpt-4-1/"}}]},
+      "metadata": {"what_it_tests": "Sau khi URL được cung cấp ở lượt trước, dùng fetch với đúng URL."}
+    },
+    {
+      "id": "G10_multiturn_confirm_before_telegram_send",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Gửi bản tin AI hôm nay lên Telegram giúp mình"},
+        {"role": "user", "content": "Soạn nội dung ngắn khoảng 3 gạch đầu dòng"},
+        {"role": "user", "content": "Chuẩn bị xong thì hỏi mình xác nhận trước khi gửi"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"what_it_tests": "Không thực hiện side effect; phải xin xác nhận yes/no trước khi gửi Telegram."}
+    }
+  ]
 }
+

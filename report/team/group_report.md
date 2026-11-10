@@ -96,8 +96,18 @@ Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
 |---|---|---|---|
-| Chưa có case nhóm | `starter_v0/data/eval_group.json` vẫn có `cases: []` | Không có run `--suite group` | Chưa có kết quả để báo cáo; đây là phần còn thiếu của CP4. |
+| G01_similar_posts_by_reference_account | Route tới tool mới; map Andrej Karpathy | `similar_posts(reference_screenname="karpathy")` | `provider_error` — không đo được |
+| G02_news_topic_timeframe | Tin xe điện trong tháng này | `lookup(query="xe điện", topic="news", timeframe="month")` | `provider_error` — không đo được |
+| G03_posts_about_topic_not_user_timeline | Phân biệt tìm theo chủ đề và timeline | `social_search(query="VinFast")` | `provider_error` — không đo được |
+| G04_missing_person_for_timeline | Hỏi lại khi thiếu tài khoản, giữ limit | `clarify(response_type="text")` | `provider_error` — không đo được |
+| G05_no_tool_greeting | Lời chào không cần tool | Trả lời không gọi tool | `provider_error` — không đo được |
+| G06_multiturn_fill_timeline_account | Bổ sung tài khoản, giữ số lượng qua lượt | `timeline(screenname="satyanadella", limit=4)` | `provider_error` — không đo được |
+| G07_multiturn_switch_social_to_web | Đổi social sang web, giữ chủ đề và thời gian | `lookup(query="pin thể rắn", topic="news", timeframe="week")` | `provider_error` — không đo được |
+| G08_multiturn_correct_social_search_type | Sửa loại kết quả thành Top qua lượt | `social_search(query="AI agents", search_type="Top")` | `provider_error` — không đo được |
+| G09_multiturn_url_after_clarification | Dùng URL đã được bổ sung ở lượt trước | `fetch(url="https://openai.com/index/introducing-gpt-4-1/")` | `provider_error` — không đo được |
+| G10_multiturn_confirm_before_telegram_send | Xác nhận trước side effect | `clarify(response_type="yes_no")` | `provider_error` — không đo được |
 
+Run: `starter_v0/runs/v3_B_group_openrouter_20261110T184440643560.json`. Schema hợp lệ và đủ 10 case (5 single turn, 5 multi turn), nhưng OpenRouter trả `APIConnectionError: Connection error` cho cả 10; `provider_error_cases=10`, `measured_cases=0`, `passed_cases=0`. Không diễn giải 0% như điểm chất lượng agent; cần chạy lại khi provider kết nối được để có kết quả đo.
 ### B4. Live Chat Evidence
 
 Lấy từ `starter_v0/transcripts/*.transcript.json`.
@@ -189,3 +199,5 @@ Danh sách ba thành viên có trong [TEAM.md](../../TEAM.md). Các báo cáo c�
 ## 8. Tài liệu tham khảo
 
 -
+
+
