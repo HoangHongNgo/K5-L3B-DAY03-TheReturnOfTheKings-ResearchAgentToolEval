@@ -115,3 +115,21 @@ tools:
         max_pages: {type: integer, default: 5, description: "Maximum pages to extract; default 5."}
         max_chars: {type: integer, default: 8000, description: "Maximum extracted characters; default 8000."}
       required: [arxiv_url]
+
+  - name: deduplicate
+    description: "Remove repeated research results before formatting a digest. Use when combining results from multiple searches. A duplicate has the same normalized URL or title; the first occurrence is kept. Does not fetch or verify sources."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          default: []
+          description: "Research result objects to deduplicate"
+          items:
+            type: object
+            properties:
+              title: {type: string}
+              url: {type: string}
+              source: {type: string}
+              summary: {type: string}
+      required: [items]
