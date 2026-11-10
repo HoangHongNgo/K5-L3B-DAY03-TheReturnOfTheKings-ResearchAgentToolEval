@@ -115,11 +115,13 @@ Nguồn B4: `starter_v0/transcripts/v3_openrouter_20261110T180424128094.transcri
 
 | Item | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
-| Tool mới (`tools/<tên>/`) | Chưa có | Registry hiện chỉ gồm tool starter | CP3 còn thiếu. |
-| Unit test tool mới (≥ 3 test/tool) | `pytest -q`: 62 passed, 17 skipped | Toàn bộ test đang thực thi pass | 17 TODO trong `tests/test_tools_todo.py` còn skipped; chưa có test tool mới. |
+| Tool mới (`tools/<tên>/`) | `starter_v0/tools/deduplicate/` | `deduplicate` giữ kết quả đầu tiên khi URL chuẩn hóa hoặc tiêu đề trùng; bỏ query tracking và fragment URL. | Tool local, không gọi mạng; input sai trả error dict. |
+| Unit test tool mới (≥ 3 test/tool) | `starter_v0/tests/test_tools_todo.py`; `.venv\\Scripts\\python.exe -m pytest tests/ -q` từ `starter_v0/` | 3 test riêng cho deduplicate: URL trùng, input sai, item sai kiểu. Toàn suite: 84 passed, 0 failed, 0 skipped. | Unit test chứng minh xử lý code và lỗi input; chưa chứng minh model sẽ chọn tool đúng trong eval. |
 | UI (lệnh chạy + link dùng thử) | `starter_v0/app.py`, `starter_v0/requirements.txt`; link và lệnh ở A1 | UI dùng cùng vòng lặp với `chat.py`, lưu transcript và cho xem tool result; URL công khai trả `200 ok` | Link Quick Tunnel chỉ tồn tại khi UI và tunnel còn chạy; chưa có người ngoài nhóm xác nhận dùng thử câu A3. |
 
-Tool unit tests: chưa có test cho tool mới vì CP3 chưa được thực hiện. Không có ví dụ lỗi tương ứng để dẫn chứng.
+Tool unit tests: đã viết 3 test cho tool mới. Test bắt trường hợp model truyền `items` là chuỗi thay vì danh sách; tool trả `TypeError` trong error dict thay vì làm agent crash. Eval routing không đảm bảo cover kiểu input này.
+
+CP3: đã viết 3 unit test cho `deduplicate`. Ví dụ lỗi được bắt: model truyền `items` là chuỗi thay vì danh sách; tool trả `TypeError` trong error dict thay vì làm agent crash. Đây là kiểm tra trực tiếp code tool, eval routing không đảm bảo cover kiểu input này.
 
 ### B5. Bonus Evidence
 
