@@ -17,7 +17,7 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 result = TOOL_FUNCTIONS["similar_posts"](
-    reference_screenname="b1rdal",
+    reference_screenname="elonmusk",
     timeline_limit=5,
     search_type="Top",
     limit=3,
