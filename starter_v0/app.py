@@ -1,6 +1,7 @@
-"""Streamlit demo comparing five configurations of the same research agent."""
+"""Streamlit demo comparing research agent versions and their evaluations."""
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -24,6 +25,7 @@ from versioning import artifact_version_dict, build_artifact_version
 PROVIDER = "openrouter"
 HISTORY_WINDOW = 5
 MAX_TOOL_ROUNDS = 4
+METRICS_PATH = ROOT / "data" / "demo_metrics.json"
 
 
 @dataclass(frozen=True)
@@ -65,11 +67,11 @@ VERSIONS = (
         tools_path=ARTIFACTS_DIR / "replay_cp2" / "v3" / "tools.yaml",
     ),
     DemoVersion(
-        key="v3_with_added_tools",
-        label="v3 with added tools",
-        description="Cấu hình v3 hiện tại, bổ sung deduplicate và similar_posts.",
-        prompt_path=ARTIFACTS_DIR / "system_prompt.md",
-        tools_path=ARTIFACTS_DIR / "tools.yaml",
+        key="v4",
+        label="v4 with added tool",
+        description="Prompt v4 xử lý yêu cầu bỏ nguồn ở hội thoại nhiều lượt; bổ sung deduplicate và similar_posts.",
+        prompt_path=ARTIFACTS_DIR / "replay_cp2" / "v4" / "system_prompt.md",
+        tools_path=ARTIFACTS_DIR / "replay_cp2" / "v4" / "tools.yaml",
     ),
 )
 
@@ -162,7 +164,59 @@ def render_tab(config: DemoVersion) -> None:
     st.rerun()
 
 
-st.set_page_config(page_title="Research Agent", page_icon="🔎")
+def render_metrics_tab() -> None:
+    metrics = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+    versions = metrics["versions"]
+    first, last = versions[0], versions[-1]
+
+    st.subheader("Thay đổi và kết quả qua các phiên bản")
+    st.caption("Số liệu tĩnh từ các run OpenRouter; tab này không gọi model hay tool.")
+    col_base, col_gain, col_group = st.columns(3)
+    col_base.metric("Case cũ đúng ở v4", f"{last['base_passed']}/{metrics['base_cases']}")
+    col_gain.metric("Tăng từ v0 đến v4", f"+{last['base_passed'] - first['base_passed']} case")
+    col_group.metric("Case mới có tool cần thiết ở v4", f"{last['group_tool_coverage']}/{metrics['group_cases']}")
+
+    st.markdown("#### Bộ case cũ · 20 case")
+    base_rows = [
+        "| Phiên bản | Thay đổi | Tools | Case đúng | Routing | Tham số | Nhiều lượt |",
+        "|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for item in versions:
+        base_rows.append(
+            f"| {item['key']} | {item['change']} | {item['tools']} | "
+            f"{item['base_passed']}/{metrics['base_cases']} "
+            f"({item['base_passed'] / metrics['base_cases']:.0%}) | "
+            f"{item['base_routing']:.0%} | {item['base_arguments']:.0%} | "
+            f"{item['base_multiturn']:.0%} |"
+        )
+    st.markdown("\n".join(base_rows))
+    st.caption("Mỗi run base đo đủ 20 case và không có lỗi provider. v2 và v3 giữ mức 19/20; v4 đạt 20/20 trong run được chọn.")
+    st.caption("Một run kiểm soát dùng prompt v4 với 10 tool của v3 cũng đạt 20/20 trên bộ cũ; điểm này không chứng minh riêng tác động của hai tool mới.")
+
+    st.markdown("#### Bộ case mới · 10 case")
+    st.write(f"{metrics['group_single_turn_cases']} case một lượt · {metrics['group_multi_turn_cases']} case nhiều lượt")
+    group_rows = [
+        "| Phiên bản | Case có tool cần thiết | Tool còn thiếu | Case đúng |",
+        "|---|---:|---|---:|",
+    ]
+    for item in versions:
+        group_rows.append(
+            f"| {item['key']} | {item['group_tool_coverage']}/{metrics['group_cases']} | "
+            f"{item['group_missing_tool'] or '—'} | Chưa đo |"
+        )
+    st.markdown("\n".join(group_rows))
+    st.info(metrics["group_result_note"])
+    st.caption("Mức độ sẵn có của tool chỉ kiểm tra tool được khai báo cho từng case; đây không phải điểm chất lượng trên bộ case mới.")
+
+    with st.expander("Nguồn số liệu"):
+        st.write(f"Case cũ: {metrics['base_dataset']} · Case mới: {metrics['group_dataset']}")
+        st.write(f"Provider/model: {metrics['provider']} / {metrics['model']}")
+        for item in versions:
+            st.code(f"{item['key']}: {item['base_run']}")
+        st.code(f"v4 prompt + 10 tools: {metrics['v4_isolated_base_run']}")
+
+
+st.set_page_config(page_title="Research Agent", page_icon="🔎", layout="wide")
 st.title("🔎 Research Agent")
 st.caption("Thử cùng một câu hỏi ở từng phiên bản để so sánh prompt, tool và kết quả.")
 
@@ -171,6 +225,10 @@ with st.sidebar:
     st.write("Ví dụ: ‘Chính sách trích dẫn nguồn của công ty là gì?’")
     st.write("Ví dụ: ‘Tìm các bài đăng tương tự bài này: ...’")
 
-for tab, config in zip(st.tabs([version.label for version in VERSIONS]), VERSIONS):
+tabs = st.tabs([version.label for version in VERSIONS] + ["Thống kê phiên bản"])
+for tab, config in zip(tabs, VERSIONS):
     with tab:
         render_tab(config)
+
+with tabs[-1]:
+    render_metrics_tab()

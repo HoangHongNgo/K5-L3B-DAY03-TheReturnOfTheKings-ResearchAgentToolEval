@@ -1,0 +1,74 @@
+{
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "base_dataset": "data/eval_base.json",
+  "base_cases": 20,
+  "group_dataset": "data/eval_group.json",
+  "group_cases": 10,
+  "group_single_turn_cases": 5,
+  "group_multi_turn_cases": 5,
+  "group_result_note": "Chưa có run hợp lệ cho bộ case mới, nên chưa công bố điểm pass. Mức độ sẵn có của tool không phải điểm chất lượng agent.",
+  "v4_isolated_base_run": "runs/v4-isolated_B_base_openrouter_20261110T191807120240.json",
+  "versions": [
+    {
+      "key": "v0",
+      "change": "Baseline: prompt và mô tả tool ban đầu",
+      "tools": 10,
+      "base_passed": 13,
+      "base_routing": 0.75,
+      "base_arguments": 0.65,
+      "base_multiturn": 1.0,
+      "base_run": "runs/v0_B_base_openrouter_20261110T182248949868.json",
+      "group_tool_coverage": 9,
+      "group_missing_tool": "similar_posts"
+    },
+    {
+      "key": "v1",
+      "change": "Prompt: hỏi lại khi thiếu dữ liệu, xác nhận trước khi gửi",
+      "tools": 10,
+      "base_passed": 19,
+      "base_routing": 1.0,
+      "base_arguments": 0.95,
+      "base_multiturn": 1.0,
+      "base_run": "runs/v1_B_base_openrouter_20261110T182720990693.json",
+      "group_tool_coverage": 9,
+      "group_missing_tool": "similar_posts"
+    },
+    {
+      "key": "v2",
+      "change": "Prompt: quy định rõ response_type cho clarify",
+      "tools": 10,
+      "base_passed": 19,
+      "base_routing": 1.0,
+      "base_arguments": 0.95,
+      "base_multiturn": 1.0,
+      "base_run": "runs/v2_B_base_openrouter_20261110T182539000824.json",
+      "group_tool_coverage": 9,
+      "group_missing_tool": "similar_posts"
+    },
+    {
+      "key": "v3",
+      "change": "Tool declarations: mô tả rõ routing và tham số",
+      "tools": 10,
+      "base_passed": 19,
+      "base_routing": 0.95,
+      "base_arguments": 0.95,
+      "base_multiturn": 0.8333,
+      "base_run": "runs/v3_B_base_openrouter_20261110T181735400457.json",
+      "group_tool_coverage": 9,
+      "group_missing_tool": "similar_posts"
+    },
+    {
+      "key": "v4",
+      "change": "Prompt: hủy nguồn đã bỏ ở nhiều lượt; thêm deduplicate, similar_posts",
+      "tools": 12,
+      "base_passed": 20,
+      "base_routing": 1.0,
+      "base_arguments": 1.0,
+      "base_multiturn": 1.0,
+      "base_run": "runs/v4_B_base_openrouter_20261110T191602683398.json",
+      "group_tool_coverage": 10,
+      "group_missing_tool": null
+    }
+  ]
+}
