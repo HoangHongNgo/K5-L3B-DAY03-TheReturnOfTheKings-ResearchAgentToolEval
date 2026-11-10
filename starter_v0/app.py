@@ -1,4 +1,4 @@
-"""Streamlit demo comparing three configurations of the same research agent."""
+"""Streamlit demo comparing five configurations of the same research agent."""
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -42,6 +42,20 @@ VERSIONS = (
         description="Bản gốc: prompt và mô tả tool ban đầu.",
         prompt_path=ARTIFACTS_DIR / "replay_cp2" / "v0" / "system_prompt.md",
         tools_path=ARTIFACTS_DIR / "replay_cp2" / "v0" / "tools.yaml",
+    ),
+    DemoVersion(
+        key="v1",
+        label="v1",
+        description="Cải tiến prompt: hỏi lại khi thiếu thông tin và xin xác nhận trước khi gửi.",
+        prompt_path=ARTIFACTS_DIR / "replay_cp2" / "v1" / "system_prompt.md",
+        tools_path=ARTIFACTS_DIR / "replay_cp2" / "v1" / "tools.yaml",
+    ),
+    DemoVersion(
+        key="v2",
+        label="v2",
+        description="Cải tiến prompt: quy định rõ response_type khi hỏi lại hoặc xin xác nhận.",
+        prompt_path=ARTIFACTS_DIR / "replay_cp2" / "v2" / "system_prompt.md",
+        tools_path=ARTIFACTS_DIR / "replay_cp2" / "v2" / "tools.yaml",
     ),
     DemoVersion(
         key="v3",
