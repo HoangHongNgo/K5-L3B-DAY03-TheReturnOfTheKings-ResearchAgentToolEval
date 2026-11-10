@@ -118,11 +118,12 @@ tools:
 
   # ---------------- Team tool ----------------
   - name: similar_posts
-    description: "Find X/Twitter posts similar to a complete reference post and rank them by textual similarity. Use when the user supplies post text and asks for related or similar posts. Do not use for ordinary keyword searches; use social_search instead."
+    description: "Find and rank X/Twitter posts similar to either complete reference text or the recent-post profile of one account. Use when the user supplies post text or a username and explicitly asks for similar posts. Provide exactly one reference input. Do not use for ordinary keyword searches; use social_search instead."
     parameters:
       type: object
       properties:
-        reference_text: {type: string, description: "Full text of the reference post to compare against."}
+        reference_text: {type: string, default: "", description: "Full reference-post text. Use this OR reference_screenname, never both."}
+        reference_screenname: {type: string, default: "", description: "X username without @ whose recent posts define the comparison profile. Use this OR reference_text, never both."}
         search_type: {type: string, enum: [Top, Latest], default: "Top", description: "Use Top for stronger matches or Latest for recent candidates."}
         limit: {type: integer, minimum: 1, maximum: 20, default: 5, description: "Maximum number of ranked similar posts to return."}
-      required: [reference_text]
+        timeline_limit: {type: integer, minimum: 1, maximum: 20, default: 10, description: "Number of recent posts used to build a username profile."}
