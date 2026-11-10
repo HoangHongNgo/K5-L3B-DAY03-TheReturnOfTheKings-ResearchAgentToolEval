@@ -110,7 +110,15 @@ Lấy từ `starter_v0/transcripts/*.transcript.json`.
 | Unit test tool mới (≥ 3 test/tool) | `pytest` output (0 failed) |  |  |
 | UI (lệnh chạy + link dùng thử) |  |  |  |
 
-Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
+#### CP3 — Tool `similar_posts`
+
+| Item | Evidence File | What Worked | Risk / Guardrail |
+|---|---|---|---|
+| Tool mới `similar_posts` | `starter_v0/tools/similar_posts/tool.py`; `starter_v0/tools/similar_posts/TOOL.md`; `starter_v0/tools/__init__.py`; `starter_v0/artifacts/tools.yaml` | Tool tìm và xếp hạng bài đăng X/Twitter tương tự theo một đoạn `reference_text` hoặc hồ sơ nội dung từ các bài gần đây của `reference_screenname`. Điểm xếp hạng kết hợp term coverage (45%), Jaccard overlap (35%) và phrase overlap (20%). Chế độ theo tài khoản dùng một request lấy timeline và một request tìm kiếm. | Tool kiểm tra input; giới hạn `limit` và `timeline_limit` trong khoảng 1–20; loại bài trùng, bài của chính tài khoản tham chiếu và kết quả có điểm dưới 0.15. Khi thiếu key hoặc API lỗi, tool trả error dictionary thay vì làm agent crash. |
+| Unit test tool mới — 5 test | `starter_v0/tests/test_tools_todo.py`; kết quả toàn suite: `72 passed, 0 failed, 14 skipped` | Năm test kiểm tra: xếp hạng và query gửi tới API; loại kết quả dưới ngưỡng; tạo profile tài khoản bằng đúng hai request; từ chối reference rỗng mà không gọi mạng; và trả error dictionary khi thiếu `RAPIDAPI_KEY`. Toàn bộ 60 contract test pass. | HTTP được mock bằng `FakeResponse`, nên unit test không dùng API credit hoặc mạng thật. Test kiểm tra cả request gửi đi và dữ liệu trả về. |
+| Live smoke test | Chạy trực tiếp `TOOL_FUNCTIONS["similar_posts"]` với `reference_screenname="sama"`, `timeline_limit=5`, `limit=2` | Tool lấy 5 bài gần đây, tạo profile, thực hiện tìm kiếm và trả 2 bài từ tài khoản khác kèm `similarity_score`; luồng hoàn thành không có API error. | Một live test dùng đúng 2 RapidAPI request. Query profile loại các từ chung như `rt`, `today`, `things`, `we` để giảm nhiễu và tiết kiệm quota free tier. |
+
+Nhóm viết **5 unit test** cho `similar_posts`, vượt yêu cầu tối thiểu 3 test/tool. Một lỗi mà unit test bắt được nhưng routing eval không phát hiện là trường hợp model truyền `reference_text` rỗng: model vẫn có thể chọn đúng tên tool nên routing eval xem là đúng, nhưng implementation lỗi có thể gửi một API request vô nghĩa. Test `test_similar_posts_rejects_empty_reference_without_network` xác nhận tool trả `ValueError` dưới dạng error dictionary và không tạo HTTP request nào.
 
 ### B5. Bonus Evidence
 
