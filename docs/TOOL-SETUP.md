@@ -12,7 +12,7 @@ verify that your API key works — they are not routing hints. Run them from `st
 Recommended provider:
 
 ```bash
-OPENROUTER_API_KEY=<your-key>
+OPENROUTER_API_KEY= <your-key>
 ```
 
 Alternatives:

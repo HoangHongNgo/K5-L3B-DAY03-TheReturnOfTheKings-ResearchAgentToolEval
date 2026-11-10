@@ -110,13 +110,49 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
 #   2. bad / missing input from the model (empty string, wrong type, out-of-enum value)
 #   3. failure path (missing key, HTTP error, timeout) -> returns error dict, does not raise
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+def test_similar_posts_ranks_candidates_and_sends_derived_query(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    calls = fake_http(FakeResponse({"timeline": [
+        {
+            "tweet_id": "1", "screen_name": "alice",
+            "text": "AI agents use tools reliably with concise prompts",
+        },
+        {
+            "tweet_id": "2", "screen_name": "bob",
+            "text": "AI models are useful for research",
+        },
+        {
+            "tweet_id": "3", "screen_name": "copy",
+            "text": "AI agents use tools reliably",
+        },
+        {"screen_name": "missing_id", "text": "AI agents use tools"},
+    ]}))
+
+    result = TOOL_FUNCTIONS["similar_posts"](
+        reference_text="AI agents use tools reliably", search_type="Top", limit=2,
+    )
+
+    assert calls[0]["url"] == "https://twitter-api45.p.rapidapi.com/search.php"
+    assert calls[0]["params"] == {
+        "query": "ai agents use tools reliably", "search_type": "Top",
+    }
+    assert calls[0]["headers"]["x-rapidapi-key"] == "test-key"
+    assert [item["source"] for item in result["items"]] == ["@alice", "@bob"]
+    assert result["items"][0]["similarity_score"] > result["items"][1]["similarity_score"]
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+def test_similar_posts_rejects_empty_reference_without_network(fake_http) -> None:
+    calls = fake_http(FakeResponse({"timeline": []}))
+
+    result = TOOL_FUNCTIONS["similar_posts"](reference_text="   ")
+
+    assert result["error"] == "ValueError"
+    assert "reference_text" in result["message"]
+    assert calls == []
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_similar_posts_missing_key_returns_error_dict() -> None:
+    result = TOOL_FUNCTIONS["similar_posts"](reference_text="AI agents use tools")
+
+    assert result["error"] == "RuntimeError"
+    assert "RAPIDAPI_KEY" in result["message"]
