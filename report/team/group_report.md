@@ -8,9 +8,9 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
+- Tên nhóm: TheReturnOfTheKings
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
-- Provider/model dùng cho v0–v3:
+- Provider/model dùng cho v0: OpenRouter / `openai/gpt-4o-mini`.
 
 ## 2. Mục tiêu và cách tiếp cận — PHẦN A: Giới thiệu agent
 
@@ -52,7 +52,8 @@ Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc 
 
 > Tóm tắt các thay đổi chính trong `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`, và tool mới nhóm viết (tên, làm gì, khi nào agent nên gọi).
 
--
+- `system_prompt.md` (v1–v2): giới hạn phạm vi research, hỏi lại khi thiếu tài khoản/URL, giữ ngữ cảnh khi người dùng sửa yêu cầu và yêu cầu xác nhận trước khi `send`. Prompt quy định hành vi xuyên suốt mọi tool.
+- `tools.yaml` (v3): mô tả từng tool theo tình huống dùng/không dùng, chuẩn hóa handle, `query`/`topic`/`timeframe`, `search_type`, và `response_type`. Declaration giúp model chọn đúng tool và điền đúng tham số.
 
 ## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
 
@@ -62,10 +63,12 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
-| v0 | baseline |  |  |  |  |
-| v1 |  |  |  |  |  |
-| v2 |  |  |  |  |  |
-| v3 |  |  |  |  |  |
+| v0 | baseline; prompt và tools gốc | Đo trước khi thay đổi | — | 0.65 (13/20) | `starter_v0/runs/v0_B_base_openrouter_20261110T172210098380.json` |
+| v1 | `system_prompt.md` | Bỏ chỉ dẫn tự đoán và tự gửi sẽ giảm lỗi routing/boundary | 0.65 (13/20) | 0.90 (18/20) | `starter_v0/runs/v1_B_base_openrouter_20261110T173452631757.json` |
+| v2 | `system_prompt.md` | Ghi rõ `response_type` cho `clarify` sẽ sửa lỗi hỏi lại | 0.90 (18/20) | 0.95 (19/20) | `starter_v0/runs/v2_B_base_openrouter_20261110T173620670812.json` |
+| v3 | `tools.yaml` | Mô tả rõ cách route, tham số và ranh giới `send` sẽ sửa case còn lại | 0.95 (19/20) | 0.95 (19/20) | `starter_v0/runs/v3_B_base_openrouter_20261110T174041043717.json` |
+
+Mỗi dòng dùng run có `provider_error_cases=0` và `measured_cases=20/20`. V3 sửa được `R12_confirm_before_send`, nhưng `M06_switch_tool` vẫn gọi thêm `social_search` sau khi người dùng chuyển sang chỉ tìm tin web, nên tổng điểm không tăng. Hai bản thử v3 trước đó (`v3_B_base_openrouter_20261110T173832351224.json`, `v3_B_base_openrouter_20261110T173942805034.json`) được giữ làm dấu vết điều chỉnh cùng giả thuyết mô tả tool.
 
 ### B2. Failure Analysis
 
@@ -73,7 +76,15 @@ Lấy từ `results[*].result.failures` trong run JSON.
 
 | Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| R03_web_news_routing | wrong_tool | `lookup(query="AI news", topic="news", timeframe="day", max_results=5)` | Tool đúng, nhưng `query` cần là `AI`, model thêm "news"; observed mismatch: `wrong_arg_value`. | Làm rõ rằng `query` chỉ chứa chủ đề, còn loại tin đưa vào `topic`. |
+| R08_out_of_scope | out_of_scope | `send(text="Nguyên hàm ...")` | Bài toán nguyên hàm ngoài phạm vi vẫn gọi `send`; expected no tool call. | Chặn `send` cho nội dung không phải yêu cầu gửi; trả lời ngoài phạm vi mà không gọi tool. |
+| R10_missing_handle | missing_info | `timeline(screenname="sama")` | Tự đoán tài khoản khi người dùng chưa nêu; thiếu `clarify`. | Yêu cầu hỏi lại khi thiếu handle hoặc tên người cụ thể. |
+| R11_missing_url | missing_info | `fetch(url="https://example.com/article")` | Tự tạo URL mẫu; thiếu `clarify`. | Yêu cầu hỏi URL thật trước khi gọi `fetch`. |
+| R12_confirm_before_send | wrong_boundary | `send(text="Bản tin này")` | Gọi `send` khi chưa có xác nhận; thiếu `clarify`. | Ghi rõ ranh giới xác nhận trước khi gửi. |
+| R13_parallel_web_and_tweets | wrong_tool | `lookup(query="AI news", timeframe="day", max_results=5)`; `social_search(query="AI", search_type="Latest", limit=5)` | Cả hai tool đã được gọi, nhưng `lookup` thiếu `topic="news"` và `query` cần là `AI`; observed mismatch: `wrong_arg_value`. | Làm rõ tham số `query`/`topic` của `lookup` khi gọi song song. |
+| R14_out_of_scope_coding | out_of_scope | `send(text="Dưới đây là một hàm Python ...")` | Yêu cầu viết code ngoài phạm vi vẫn gọi `send`; expected no tool call. | Giới hạn `send` vào hành động gửi đã được xác nhận. |
+
+Nguồn B2: `starter_v0/runs/v0_B_base_openrouter_20261110T172210098380.json`, `results[*].result`. `failure_type` là nhãn case trong bộ eval; `observed_mismatch` mô tả sai khác thực tế. Vì vậy R03 và R13 có nhãn `wrong_tool` dù tool đã được chọn đúng.
 
 ### B3. Team Eval Cases
 
@@ -144,7 +155,7 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 
 > Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
 
--
+- Lần chạy v0 đầu tiên bị OpenRouter trả `403 Key limit exceeded` cho cả 20 case (`starter_v0/runs/v0_B_base_openrouter_20261110T171528337107.json`), nên không dùng làm baseline. Sau khi cập nhật key, run v0 ở B1 có `provider_error_cases=0`, `measured_cases=20/20`; preflight OpenRouter pass.
 
 ## 6. Tổng hợp đóng góp
 
@@ -152,10 +163,10 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
-- Fix nào thuộc `system_prompt.md`?
-- Fix nào thuộc `tools.yaml`?
-- Failure nào cần review thủ công thay vì chấm tự động?
-- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+- `system_prompt.md` chứa quy tắc hành vi chung: không tự đoán thông tin, không dùng `send` để trả lời chat, xác nhận nội dung trước khi gửi, và tôn trọng sửa đổi ở lượt sau.
+- `tools.yaml` chứa điều kiện gọi từng tool và quy ước tham số: handle không có `@`, `topic=news` và `timeframe=day` cho tin hôm nay, `search_type=Top` cho tweet phổ biến, `response_type=yes_no` khi xin xác nhận gửi.
+- `R12_confirm_before_send` cần review thủ công vì chấm tự động chỉ kiểm tra `clarify(response_type=yes_no)`, chưa biết câu hỏi đã nêu đúng nội dung cần gửi hay chưa. Tương tự, chấm tự động không xác nhận chất lượng dữ liệu tool trả về.
+- Vòng sau sẽ thử quy tắc bỏ nguồn đã bị người dùng hủy ở đa lượt, rồi đo riêng `M06_switch_tool` và toàn bộ base để tránh lỗi hồi quy. V3 vẫn đạt 19/20 vì case này gọi thừa `social_search`.
 
 ## 8. Tài liệu tham khảo
 
