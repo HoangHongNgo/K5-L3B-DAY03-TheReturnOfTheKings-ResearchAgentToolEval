@@ -6,3 +6,5 @@ __pycache__/
 .env.*
 !.env.example
 arxiv_papers/
+# Public UI chats may contain visitors' input; keep only reviewed evidence transcripts.
+transcripts/*_ui_*.transcript.json
