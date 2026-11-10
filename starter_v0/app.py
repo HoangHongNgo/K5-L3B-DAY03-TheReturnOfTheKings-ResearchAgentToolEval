@@ -68,7 +68,7 @@ VERSIONS = (
     ),
     DemoVersion(
         key="v4",
-        label="v4 with added tool",
+        label="v4 with added tools",
         description="Prompt v4 xử lý yêu cầu bỏ nguồn ở hội thoại nhiều lượt; bổ sung deduplicate và similar_posts.",
         prompt_path=ARTIFACTS_DIR / "replay_cp2" / "v4" / "system_prompt.md",
         tools_path=ARTIFACTS_DIR / "replay_cp2" / "v4" / "tools.yaml",
@@ -214,6 +214,7 @@ def render_metrics_tab() -> None:
         for item in versions:
             st.code(f"{item['key']}: {item['base_run']}")
         st.code(f"v4 prompt + 10 tools: {metrics['v4_isolated_base_run']}")
+        st.caption("Run JSON gốc được giữ trong workspace; chỉ số tổng hợp được đưa lên website.")
 
 
 st.set_page_config(page_title="Research Agent", page_icon="🔎", layout="wide")
