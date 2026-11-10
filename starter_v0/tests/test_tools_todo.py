@@ -11,6 +11,7 @@ Rules:
 from __future__ import annotations
 
 import pytest
+import requests
 
 from conftest import FakeResponse  # noqa: F401  (you will need it)
 from tools import TOOL_FUNCTIONS  # noqa: F401
@@ -183,3 +184,105 @@ def test_deduplicate_invalid_item_returns_error_dict_without_raising() -> None:
     assert result["tool"] == "deduplicate"
     assert result["error"] == "TypeError"
     assert "title must be strings" in result["message"]
+
+def test_similar_posts_ranks_candidates_and_sends_derived_query(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    calls = fake_http(FakeResponse({"timeline": [
+        {
+            "tweet_id": "1", "screen_name": "alice",
+            "text": "AI agents use tools reliably with concise prompts",
+        },
+        {
+            "tweet_id": "2", "screen_name": "bob",
+            "text": "AI agents improve research models",
+        },
+        {
+            "tweet_id": "3", "screen_name": "copy",
+            "text": "AI agents use tools reliably",
+        },
+        {"screen_name": "missing_id", "text": "AI agents use tools"},
+    ]}))
+
+    result = TOOL_FUNCTIONS["similar_posts"](
+        reference_text="AI agents use tools reliably", search_type="Top", limit=2,
+    )
+
+    assert calls[0]["url"] == "https://twitter-api45.p.rapidapi.com/search.php"
+    assert calls[0]["params"] == {
+        "query": "ai agents tools reliably", "search_type": "Top",
+    }
+    assert calls[0]["headers"]["x-rapidapi-key"] == "test-key"
+    assert [item["source"] for item in result["items"]] == ["@alice", "@bob"]
+    assert result["items"][0]["similarity_score"] > result["items"][1]["similarity_score"]
+    assert result["items"][0]["similarity_components"]["coverage"] == 1.0
+    assert result["minimum_similarity"] == 0.15
+
+
+def test_similar_posts_filters_candidates_below_minimum_similarity(monkeypatch, fake_http) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    fake_http(FakeResponse({"timeline": [
+        {"tweet_id": "1", "screen_name": "weak", "text": "AI recipes for home cooking"},
+        {
+            "tweet_id": "2", "screen_name": "strong",
+            "text": "Language models call reliable tools with short prompts in production",
+        },
+    ]}))
+
+    result = TOOL_FUNCTIONS["similar_posts"](
+        reference_text="AI language models call tools reliably with concise prompts",
+    )
+
+    assert [item["source"] for item in result["items"]] == ["@strong"]
+
+
+def test_similar_posts_builds_profile_from_user_with_two_requests(monkeypatch) -> None:
+    monkeypatch.setenv("RAPIDAPI_KEY", "test-key")
+    responses = iter([
+        FakeResponse({"timeline": [
+            {"tweet_id": "r1", "screen_name": "source_user", "text": "AI agents call tools reliably"},
+            {"tweet_id": "r2", "screen_name": "source_user", "text": "Reliable AI evaluation for agents"},
+        ]}),
+        FakeResponse({"timeline": [
+            {"tweet_id": "self", "screen_name": "source_user", "text": "AI agents call tools"},
+            {"tweet_id": "match", "screen_name": "other_user", "text": "Reliable AI agents need tool evaluation"},
+            {"tweet_id": "weak", "screen_name": "cook", "text": "Pasta recipes for dinner"},
+        ]}),
+    ])
+    calls = []
+
+    def fake_get(url, **kwargs):
+        calls.append({"url": url, **kwargs})
+        return next(responses)
+
+    monkeypatch.setattr(requests, "get", fake_get)
+
+    result = TOOL_FUNCTIONS["similar_posts"](
+        reference_screenname="@source_user", timeline_limit=5, limit=3,
+    )
+
+    assert [call["url"] for call in calls] == [
+        "https://twitter-api45.p.rapidapi.com/timeline.php",
+        "https://twitter-api45.p.rapidapi.com/search.php",
+    ]
+    assert calls[0]["params"] == {"screenname": "source_user"}
+    assert result["reference_mode"] == "user"
+    assert result["reference_screenname"] == "source_user"
+    assert result["reference_post_count"] == 2
+    assert [item["source"] for item in result["items"]] == ["@other_user"]
+
+
+def test_similar_posts_rejects_empty_reference_without_network(fake_http) -> None:
+    calls = fake_http(FakeResponse({"timeline": []}))
+
+    result = TOOL_FUNCTIONS["similar_posts"](reference_text="   ")
+
+    assert result["error"] == "ValueError"
+    assert "reference_text" in result["message"]
+    assert calls == []
+
+
+def test_similar_posts_missing_key_returns_error_dict() -> None:
+    result = TOOL_FUNCTIONS["similar_posts"](reference_text="AI agents use tools")
+
+    assert result["error"] == "RuntimeError"
+    assert "RAPIDAPI_KEY" in result["message"]
