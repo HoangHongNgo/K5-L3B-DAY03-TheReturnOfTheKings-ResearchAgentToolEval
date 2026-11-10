@@ -1,110 +1,261 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "10 team-authored cases for CP4: 5 single-turn and 5 multi-turn cases, including routing to the added similar_posts tool.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
+  "description": "10 team-authored cases: 5 single-turn and 5 multi-turn, including 5 deduplicate routing cases and similar_posts.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
   "cases": [
     {
       "id": "G01_similar_posts_by_reference_account",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Tìm các bài đăng trên X tương tự những bài gần đây của Andrej Karpathy.",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "similar_posts", "args": {"reference_screenname": "karpathy"}}]},
-      "metadata": {"what_it_tests": "Route yêu cầu tìm bài tương tự nội dung một tài khoản tới tool similar_posts mới, map Andrej Karpathy thành karpathy."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_screenname": "karpathy"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Route yêu cầu tìm bài tương tự nội dung một tài khoản tới tool similar_posts mới, map Andrej Karpathy thành karpathy."
+      }
     },
     {
-      "id": "G02_news_topic_timeframe",
-      "phase": "B", "suite": "group",
-      "query": "Tìm tin tức về xe điện trong tháng này.",
-      "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "xe điện", "topic": "news", "timeframe": "month"}}]},
-      "metadata": {"what_it_tests": "Trích chủ đề và timeframe=month từ yêu cầu tin tức trong tháng này."}
-    },
-    {
-      "id": "G03_posts_about_topic_not_user_timeline",
-      "phase": "B", "suite": "group",
-      "query": "Trên Twitter, mọi người đang nói gì về VinFast?",
+      "id": "G02_deduplicate_same_url",
+      "phase": "B",
+      "suite": "group",
+      "query": "Loại bài trùng trong kết quả đã có: A - https://example.com/ai; A bản sao - https://example.com/ai?utm_source=x. Chỉ giữ một bài cho mỗi URL.",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "VinFast"}}]},
-      "metadata": {"what_it_tests": "Phân biệt bài viết về chủ đề với timeline của một tài khoản."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Route yêu cầu lọc URL trùng đến deduplicate."
+      }
     },
     {
-      "id": "G04_missing_person_for_timeline",
-      "phase": "B", "suite": "group",
-      "query": "Cho mình xem 7 tweet mới nhất.",
-      "failure_type": "missing_info",
-      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
-      "metadata": {"what_it_tests": "Khi thiếu tài khoản cần hỏi lại thay vì tự đoán; đồng thời giữ số lượng 7."}
+      "id": "G03_deduplicate_same_title",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hai kết quả này có cùng tiêu đề: 'AI research update' ở https://example.com/one và 'AI Research Update' ở https://example.org/two. Lọc bài trùng theo tiêu đề giúp mình.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Route yêu cầu lọc tiêu đề trùng đến deduplicate."
+      }
+    },
+    {
+      "id": "G04_deduplicate_before_digest",
+      "phase": "B",
+      "suite": "group",
+      "query": "Trước khi làm bản tin, lọc trùng các kết quả đã có: AI news - https://example.com/a; AI news copy - https://example.com/a. Bước này chỉ cần loại trùng.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Chọn deduplicate cho bước lọc trùng, chưa gọi format."
+      }
     },
     {
       "id": "G05_no_tool_greeting",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Chào bạn, hôm nay bạn khỏe không?",
       "failure_type": "unnecessary_tool",
-      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
-      "metadata": {"what_it_tests": "Lời chào xã giao không cần công cụ nghiên cứu."}
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "what_it_tests": "Lời chào xã giao không cần công cụ nghiên cứu."
+      }
     },
     {
       "id": "G06_multiturn_fill_timeline_account",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Tóm tắt 4 tweet mới nhất giúp mình"},
-        {"role": "user", "content": "Của Satya Nadella nhé"},
-        {"role": "user", "content": "Đúng, lấy 4 bài gần nhất"}
+        {
+          "role": "user",
+          "content": "Tóm tắt 4 tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của Satya Nadella nhé"
+        },
+        {
+          "role": "user",
+          "content": "Đúng, lấy 4 bài gần nhất"
+        }
       ],
       "failure_type": "missing_info",
-      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "satyanadella", "limit": 4}}]},
-      "metadata": {"what_it_tests": "Qua nhiều lượt, bổ sung tài khoản và giữ limit ban đầu."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "satyanadella",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Qua nhiều lượt, bổ sung tài khoản và giữ limit ban đầu."
+      }
     },
     {
-      "id": "G07_multiturn_switch_social_to_web",
-      "phase": "B", "suite": "group",
+      "id": "G07_multiturn_deduplicate_after_correction",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Tìm các tweet về pin thể rắn trên Twitter"},
-        {"role": "user", "content": "Đổi sang tìm tin trên web, trong tuần này"},
-        {"role": "user", "content": "Chỉ xem tin về pin thể rắn thôi"}
+        {
+          "role": "user",
+          "content": "Định dạng các kết quả này thành bản tin: A - https://example.com/a; A bản sao - https://example.com/a"
+        },
+        {
+          "role": "user",
+          "content": "Khoan định dạng, trước tiên hãy lọc bài trùng trong danh sách đó."
+        }
       ],
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "pin thể rắn", "topic": "news", "timeframe": "week"}}]},
-      "metadata": {"what_it_tests": "Theo chỉ dẫn đổi nguồn sang web, giữ chủ đề và timeframe của ngữ cảnh."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Theo yêu cầu mới nhất: lọc trùng trước, không gọi format."
+      }
     },
     {
-      "id": "G08_multiturn_correct_social_search_type",
-      "phase": "B", "suite": "group",
+      "id": "G08_multiturn_deduplicate_preserve_items",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Tìm tweet về AI agents"},
-        {"role": "user", "content": "Lấy bài phổ biến nhất, không cần bài mới nhất"},
-        {"role": "user", "content": "Vẫn chủ đề AI agents nhé"}
+        {
+          "role": "user",
+          "content": "Mình có hai link: https://example.com/report và https://example.com/report?ref=home"
+        },
+        {
+          "role": "user",
+          "content": "Đây là hai kết quả đã thu thập, không cần mở web."
+        },
+        {
+          "role": "user",
+          "content": "Lọc trùng hai kết quả đó giúp mình."
+        }
       ],
-      "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "AI agents", "search_type": "Top"}}]},
-      "metadata": {"what_it_tests": "Mang chủ đề qua lượt và cập nhật thứ tự tìm kiếm thành Top."}
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Giữ danh sách từ lượt trước, chọn deduplicate thay vì fetch hoặc lookup."
+      }
     },
     {
       "id": "G09_multiturn_url_after_clarification",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Đọc và tóm tắt bài viết này giúp mình"},
-        {"role": "user", "content": "https://openai.com/index/introducing-gpt-4-1/"},
-        {"role": "user", "content": "Tóm tắt đúng bài ở link đó"}
+        {
+          "role": "user",
+          "content": "Đọc và tóm tắt bài viết này giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "https://openai.com/index/introducing-gpt-4-1/"
+        },
+        {
+          "role": "user",
+          "content": "Tóm tắt đúng bài ở link đó"
+        }
       ],
       "failure_type": "missing_info",
-      "expect": {"tool_calls": [{"name": "fetch", "args": {"url": "https://openai.com/index/introducing-gpt-4-1/"}}]},
-      "metadata": {"what_it_tests": "Sau khi URL được cung cấp ở lượt trước, dùng fetch với đúng URL."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://openai.com/index/introducing-gpt-4-1/"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Sau khi URL được cung cấp ở lượt trước, dùng fetch với đúng URL."
+      }
     },
     {
       "id": "G10_multiturn_confirm_before_telegram_send",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Gửi bản tin AI hôm nay lên Telegram giúp mình"},
-        {"role": "user", "content": "Soạn nội dung ngắn khoảng 3 gạch đầu dòng"},
-        {"role": "user", "content": "Chuẩn bị xong thì hỏi mình xác nhận trước khi gửi"}
+        {
+          "role": "user",
+          "content": "Gửi bản tin AI hôm nay lên Telegram giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Soạn nội dung ngắn khoảng 3 gạch đầu dòng"
+        },
+        {
+          "role": "user",
+          "content": "Chuẩn bị xong thì hỏi mình xác nhận trước khi gửi"
+        }
       ],
       "failure_type": "wrong_boundary",
-      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
-      "metadata": {"what_it_tests": "Không thực hiện side effect; phải xin xác nhận yes/no trước khi gửi Telegram."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Không thực hiện side effect; phải xin xác nhận yes/no trước khi gửi Telegram."
+      }
     }
   ]
 }
-
-

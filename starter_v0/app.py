@@ -174,7 +174,7 @@ def render_metrics_tab() -> None:
     col_base, col_gain, col_group = st.columns(3)
     col_base.metric("Case cũ đúng ở v4", f"{last['base_passed']}/{metrics['base_cases']}")
     col_gain.metric("Tăng từ v0 đến v4", f"+{last['base_passed'] - first['base_passed']} case")
-    col_group.metric("Case mới có tool cần thiết ở v4", f"{last['group_tool_coverage']}/{metrics['group_cases']}")
+    col_group.metric("Case mới đúng ở v4", f"{last['group_passed']}/{metrics['group_cases']}")
 
     st.markdown("#### Bộ case cũ · 20 case")
     base_rows = [
@@ -196,23 +196,25 @@ def render_metrics_tab() -> None:
     st.markdown("#### Bộ case mới · 10 case")
     st.write(f"{metrics['group_single_turn_cases']} case một lượt · {metrics['group_multi_turn_cases']} case nhiều lượt")
     group_rows = [
-        "| Phiên bản | Case có tool cần thiết | Tool còn thiếu | Case đúng |",
-        "|---|---:|---|---:|",
+        "| Phiên bản | Tool sẵn có | Case đúng | Routing | Tham số | Nhiều lượt |",
+        "|---|---:|---:|---:|---:|---:|",
     ]
     for item in versions:
         group_rows.append(
             f"| {item['key']} | {item['group_tool_coverage']}/{metrics['group_cases']} | "
-            f"{item['group_missing_tool'] or '—'} | Chưa đo |"
+            f"{item['group_passed']}/{metrics['group_cases']} | {item['group_routing']:.0%} | "
+            f"{item['group_arguments']:.0%} | {item['group_multiturn']:.0%} |"
         )
     st.markdown("\n".join(group_rows))
     st.info(metrics["group_result_note"])
-    st.caption("Mức độ sẵn có của tool chỉ kiểm tra tool được khai báo cho từng case; đây không phải điểm chất lượng trên bộ case mới.")
+    st.caption("5/10 case mới kiểm tra deduplicate. Tool sẵn có là số case có đủ tool được khai báo; điểm đúng đo lựa chọn tool và tham số.")
 
     with st.expander("Nguồn số liệu"):
         st.write(f"Case cũ: {metrics['base_dataset']} · Case mới: {metrics['group_dataset']}")
         st.write(f"Provider/model: {metrics['provider']} / {metrics['model']}")
         for item in versions:
             st.code(f"{item['key']}: {item['base_run']}")
+            st.code(f"{item['key']} (case mới): {item['group_run']}")
         st.code(f"v4 prompt + 10 tools: {metrics['v4_isolated_base_run']}")
         st.caption("Run JSON gốc được giữ trong workspace; chỉ số tổng hợp được đưa lên website.")
 

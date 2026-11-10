@@ -7,7 +7,7 @@
   "group_cases": 10,
   "group_single_turn_cases": 5,
   "group_multi_turn_cases": 5,
-  "group_result_note": "Chưa có run hợp lệ cho bộ case mới, nên chưa công bố điểm pass. Mức độ sẵn có của tool không phải điểm chất lượng agent.",
+  "group_result_note": "Run bộ case mới chấm chọn tool và tham số qua OpenRouter; không thực thi các tool ngoài. Mỗi phiên bản đo đủ 10/10 case, không có lỗi provider.",
   "v4_isolated_base_run": "runs/v4-isolated_B_base_openrouter_20261110T191807120240.json",
   "versions": [
     {
@@ -19,8 +19,13 @@
       "base_arguments": 0.65,
       "base_multiturn": 1.0,
       "base_run": "runs/v0_B_base_openrouter_20261110T182248949868.json",
-      "group_tool_coverage": 9,
-      "group_missing_tool": "similar_posts"
+      "group_tool_coverage": 4,
+      "group_missing_tool": "deduplicate, similar_posts",
+      "group_passed": 3,
+      "group_routing": 0.3,
+      "group_arguments": 0.3,
+      "group_multiturn": 0.4,
+      "group_run": "runs/v0_B_group_openrouter_routing_20261110T193406537236.json"
     },
     {
       "key": "v1",
@@ -31,8 +36,13 @@
       "base_arguments": 0.95,
       "base_multiturn": 1.0,
       "base_run": "runs/v1_B_base_openrouter_20261110T182720990693.json",
-      "group_tool_coverage": 9,
-      "group_missing_tool": "similar_posts"
+      "group_tool_coverage": 4,
+      "group_missing_tool": "deduplicate, similar_posts",
+      "group_passed": 3,
+      "group_routing": 0.3,
+      "group_arguments": 0.3,
+      "group_multiturn": 0.4,
+      "group_run": "runs/v1_B_group_openrouter_routing_20261110T193423559519.json"
     },
     {
       "key": "v2",
@@ -43,8 +53,13 @@
       "base_arguments": 0.95,
       "base_multiturn": 1.0,
       "base_run": "runs/v2_B_base_openrouter_20261110T182539000824.json",
-      "group_tool_coverage": 9,
-      "group_missing_tool": "similar_posts"
+      "group_tool_coverage": 4,
+      "group_missing_tool": "deduplicate, similar_posts",
+      "group_passed": 3,
+      "group_routing": 0.4,
+      "group_arguments": 0.3,
+      "group_multiturn": 0.4,
+      "group_run": "runs/v2_B_group_openrouter_routing_20261110T193439147405.json"
     },
     {
       "key": "v3",
@@ -55,8 +70,13 @@
       "base_arguments": 0.95,
       "base_multiturn": 0.8333,
       "base_run": "runs/v3_B_base_openrouter_20261110T181735400457.json",
-      "group_tool_coverage": 9,
-      "group_missing_tool": "similar_posts"
+      "group_tool_coverage": 4,
+      "group_missing_tool": "deduplicate, similar_posts",
+      "group_passed": 3,
+      "group_routing": 0.4,
+      "group_arguments": 0.3,
+      "group_multiturn": 0.4,
+      "group_run": "runs/v3_B_group_openrouter_routing_20261110T193455432457.json"
     },
     {
       "key": "v4",
@@ -68,7 +88,12 @@
       "base_multiturn": 1.0,
       "base_run": "runs/v4_B_base_openrouter_20261110T191602683398.json",
       "group_tool_coverage": 10,
-      "group_missing_tool": null
+      "group_missing_tool": null,
+      "group_passed": 9,
+      "group_routing": 1.0,
+      "group_arguments": 0.9,
+      "group_multiturn": 0.8,
+      "group_run": "runs/v4_B_group_openrouter_routing_20261110T193510658352.json"
     }
   ]
 }
