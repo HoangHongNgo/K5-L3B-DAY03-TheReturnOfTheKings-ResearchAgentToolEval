@@ -1,0 +1,1018 @@
+{
+  "run_id": "v4_B_group_openrouter_20261110T220110398537",
+  "version": "v4",
+  "artifact_version": "v4+p9178bd12f2d1+t23783ffc2215",
+  "prompt_hash": "9178bd12f2d1aa4c0300785503e9ef9390768b56997d04995f2da4637f6f6ca1",
+  "tools_hash": "23783ffc2215141c896a78b000e676c282e3f799e3ce45ad54b8aa4619e7d740",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "artifacts\\replay_cp2\\v4\\system_prompt.md",
+  "tools": "artifacts\\replay_cp2\\v4\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "10 team-authored cases: 5 single-turn and 5 multi-turn. Four cases test similar_posts, four test deduplicate, one tests no-tool behavior, and one tests the send confirmation boundary.",
+  "generated_at": "2026-11-10T22:01:10",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 10,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_similar_posts_account_easy",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Easy account-profile routing: choose similar_posts and map Andrej Karpathy to handle karpathy."
+      },
+      "input": "Tìm các bài đăng trên X tương tự những bài gần đây của Andrej Karpathy.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_screenname": "karpathy"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_screenname": "karpathy",
+              "timeline_limit": 10
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "similar_posts",
+          "args": {
+            "reference_screenname": "karpathy",
+            "timeline_limit": 10
+          },
+          "result": {
+            "tool": "similar_posts",
+            "reference_mode": "user",
+            "reference_text": "",
+            "reference_screenname": "karpathy",
+            "reference_post_count": 10,
+            "query": "so code more had into videos bit have",
+            "search_type": "Top",
+            "minimum_similarity": 0.15,
+            "items": [
+              {
+                "title": "I've been obsessed with the full creative pipeline from video concept to post-production",
+                "summary": "I've been obsessed with the full creative pipeline from video concept to post-production\n\nThe AI tools as they stand are more like performance-enhancing drugs to increase production speed, not automate it fully\n\nTools I'm using and where they fit in the pipeline\n\nPre-Production:\n\n> Hermes Harness -> Memory, skill creation, and retrieval have been excellent, whereas Claude Code and Codex I have to nudge a bit. Cron feature set goated and more intuitive \n\n> Kimi 2.6 LLM -> The model that balances cheap + quality. Sonnet 4.6 level I've seen\n\n> The above stack isn't enough as it doesn't have hands and feet to fetch data that is usually blocked by bot detection\n\nI use a plethora of APIs and tools, and here they are:\n\n- Bird CLI: X posts reads the accounts I want to know and keep up with \n\n- Tavily, Brave API, and Browser Use: Website info retrieval\n\n- Scrapes Creators API: Gets instagram, tiktok, and reddit\n\n- LinkedIn: Alt account building custom extension\n\n> This research all gets packaged up to a pre-production skill that formats to react to clips and creates a run of show doc for me\n\nThat doc gets sent to another agent that runs a skill to produce a draft of a newsletter and posts, but my show transcription gives it my voice\n\nVideo Shoot:\n\n> All Human in the loop, but a lot of people ask how I streamline this from a software/hardware standpoint\n\n> Video Camera: Sony A7SIII using evanto capture card and 24-70mm lens \n\n> Video Capture: OBS with Aitum combo - it helps me create horizontal and vertical video. I use Stream Deck and Aitum Multistream to stream to multiple locations at once\n\n> I installed Google Drive locally on the computer so outputs go there so all my agents/editors can use the footage if necessary \n\n> Nvidia computers have green screen capabilities baked in so you can do green screen videos at mass and how I posted 400 times in a week\n\n> Evmux is a cloud solution that I've seen being used by a lot of my creator friends. It marries customization and ease of use for guests. Think Streamyard but better\n\n> If you are a real OG though, you pair OBS with VDO ninja for max capability but also max frustration lol\n\n> I also have an Elgato teleprompter with a foot pedal as well\n\nPost Production:\n\n> You can't use CapCut...use Premiere or DaVinci paired with Claude Code/Codex via MCP Server\n\nMCP servers have turned them into agent editors that do some of the grunt work\n\nRemove pauses, insert clips, generate captions\n\nIt is black magic when you see it, and you won't go back\n\n> Hyperframes: My sweet child. Open source software that helps turn anything that you can make in HTML, CSS, JS into a video\n\nI feel like it is a bridge software and a critical link to create a deterministic system I have in-house\n\n> Google Gemini: Note I'm saying this more out of theory and not practice, but Gemini has given us something recently that we haven't ever had before, which is vision context\n\nInstead of all the other models where you give multiple pictures, and it has to deduce each frame, each frame is being deduced in that one single shot, not frame to frame\n\nGemini fixes this by knowing that a frog jumped and then landed on another lily pad, while others can't or at least it will guess\n\nWhich unlocks B-roll deduction, or at least a better one, giving us visiual context not just written\n\nThe majority of my workflow ideation nowadays has been in the Agent editor, utilizing reusable libraries, file structures, and a good agent.md & marrying it with taste to see if it can learn my taste over time\n\nIf it does, I have a hot take that larger AI editing platforms will die, as all the major editors are baking in their taste through memory and files that will get them to 80% of the solution\n\nAnd claude/codex is just as expensive as Opus/Descript\n\nThey will spend their time and excess capacity on quality \n\nThe majority of the bottleneck for creatives is actually fatigue from technical \n\nAll of us would much rather spend our time on creative endeavors vs timeline optimization",
+                "url": "https://x.com/paytkaleiwahea/status/2086838836252832065",
+                "source": "@paytkaleiwahea",
+                "date": "Mon Aug 10 15:35:24 +0000 2026",
+                "metrics": {
+                  "favorites": 18,
+                  "retweets": 0,
+                  "views": "1624"
+                },
+                "similarity_score": 0.4578,
+                "similarity_components": {
+                  "coverage": 1.0,
+                  "jaccard": 0.0222,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "I bought a business with debt because an influencer on Instagram said it was easy.",
+                "summary": "I bought a business with debt because an influencer on Instagram said it was easy.\n\nThey got the views. I got the loan.\n\nI watched the first video at 1 a.m. while my daughter slept down the hall.\n\nA content creator in makeup stood in front of a whiteboard:\n\n“Buy a boring business. Use the SBA. Be CEO of your life.”\n\nHell that sounds good! THE GRAY WAVE!! \n\nIt had 2.3 million views, and the thumbnail showed a laundromat with dollar signs pouring out of the dryers.\n\nI watched forty more that week.\n\nI’d been playing with Claude Code every night after work. Now I knew what it was for.\n\nI changed my LinkedIn to “Looking for one great business to buy,” like the videos said I should.\n\nI made a personal website for my holding company: Ridgeline Blue Capital.\n\nI was SURE the boomers running these companies had no idea what was possible.\n\nI’d walk in, use AI and marketing like crazy, and double the margins by Christmas.\n\nI just needed a business to do it to.\n\nI wasn’t reckless.\n\nI bought the $2,997 course and religiously finished every module. I'd join the weekly coaching calls - and take lots of notes! I wouldn't have time once I was THE CEO OF A BORING BUSINESS!\n\nI joined the paid community, where the posts were all closings and champagne: “Just got the keys!” “Month 3, already cash-flowing!”\n\nThen I found it: an HVAC company doing $1.4 million in revenue. \n\nSure it was a bit smaller than my \"buy box\"! But hell, gotta start somewhere! HVAC is super hot these days, right? I saw a video on instagram. \n\nHell, the business had been around for 20 years, and I was WAY smarter than the owner. He didn’t even go to college!\n\nI paid a CPA $18,000 for a quality-of-earnings report and paid a lawyer to read every page.\n\nMy spreadsheet had three downside scenarios, and on paper I survived all of them.\n\nI was finally able to use some of the skills I'd learned at my w-2! Wow this is entrepreneurship! \n\nSo I bought it.\n\nI signed a personal guarantee on a $1.6 million loan and put the house up as collateral, because the videos called that “just the price to become CEO of your life.”\n\nBut it’s just content, right?\n\nThe lead technician, Ray, quit in the first week.\n\nHe’d thought the owner was going to hand him the business. When he found out otherwise, he left.\n\nNo QoE report could have told me the business was really Ray, and that the customers were loyal to Ray.\n\nTwo more techs left with him. By summer I was in crawlspaces at 9 p.m., trying to learn a trade I’d only ever seen in B-roll.\n\nI had to pay a random guy a grand a month to rent his license, just to keep the lights on.\n\nMake money? Fuck. I was just trying to make it to Friday without touching even more of my savings.\n\nI barely even understood what I'd gotten myself into... just trying to make payroll, my debt, and the lease. \n\nThe letters in the mail. OH THE LETTERS IN THE MAIL.\n\nBut everyone on the internet seemed to be making it work?\n\nWHAT WAS WRONG WITH ME?\n\nI finally posted in the “community.”\n\nThe replies poured in. “Proud of you for sharing.” “This is the messy middle.” “Sending strength, brother.” \"My brother owns a plumbing company, are you posting on facebook? Happy to connect, lmk!\" \n\nForty-seven likes.\n\nI read them in the truck and felt worse.\n\nThey called it “support,” but what the fuck did that even mean?\n\nNobody offered to cover payroll.\n\nNobody’s wife was asking where the money went.\n\nIt was my house on the line, not theirs.\n\nIn the morning they’d all scroll on to the next “just got the keys!”\n\nThe loan payment came out on the 1st every month. It never missed.\n\nI stopped sleeping. I stopped coming to dinner.\n\nMy wife found the line of credit I’d opened to make payroll, and all the stuff I'd been shuffling on our credit cards.\n\nShe didn’t yell. She said, very quietly, “You didn’t tell me,” and that was way way worse.\n\nBUT IT’S JUST CONTENT, RIGHT?\n\nI kept watching. Then I noticed something I’d missed before.\n\nAt the end of each video, after forty minutes of cash flow and freedom, the influencer would glance at the camera: “Look, nobody said this was easy.”\n\nThree hundred hours of entreporn, and six seconds of reality per video.\n\nBut that was the rear view mirror. I was in now.\n\nSo I hid it all: the line of credit, the sleepless nights, and eventually the six-pack a night and the weed every night to get to sleep in the face of crippling anxiety. \n\nTexts from crew in the middle of the night. Unexpected bills. Calls from vendors I'd been slow paying bc I didn't have the money. \n\nI kept up a highlight reel, because that’s what the internet demanded. \n\nI changed my LinkedIn to “Acquisition Entrepreneur” so the people I went to college with would be impressed.\n\nMy wife saw through it anyway.\n\nShe took our daughter to her mother’s, and the house went quiet.\n\nOne night I sat in the truck outside the shop and couldn’t think of a reason to drive home.\n\nI scrolled.\n\nA new post in the community: “Closed on deal #2!” \n\nFire emojis.\n\nEveryone else seemed to be making it work.\n\nI wondered how many of them were sitting in trucks, too.\n\nBUT IT’S JUST CONTENT, RIGHT?\n\nI put the phone down. Then I picked it back up and called my brother. “I’m not okay,” I said, and my voice broke on the last word.\n\nIt was the first sentence in eighteen months that wasn’t a performance.\n\nThen I looked in the mirror, honestly, for the first time in eighteen months, and said under my breath:\n\n“This guy SMBs.”",
+                "url": "https://x.com/MatznerJon/status/2115065729343013201",
+                "source": "@MatznerJon",
+                "date": "Tue Oct 27 12:59:00 +0000 2026",
+                "metrics": {
+                  "favorites": 201,
+                  "retweets": 3,
+                  "views": "38797"
+                },
+                "similarity_score": 0.4568,
+                "similarity_components": {
+                  "coverage": 1.0,
+                  "jaccard": 0.0195,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "YOU WON'T HAVE A JOB IN 2027 IF YOU DON'T LEARN THIS",
+                "summary": "YOU WON'T HAVE A JOB IN 2027 IF YOU DON'T LEARN THIS\n\n7 GitHub repos that will save you from being replaced by AI:\n\n1. career-ops (80k stars)\nan agent that scans job boards, scores every role against your CV and tailors your resume for each one\nhttps://t.co/gfHWTpxqwo\n\n2. Agent Reach (107k stars)\ngives your agent eyes on YouTube, Reddit, GitHub, LinkedIn and the open web with one command\nhttps://t.co/5maRqwTETv\n\n3. OfficeCLI (32k stars)\nlets agents create and edit Word, Excel and PowerPoint files without Office installed\nhttps://t.co/mjUQgCM3IE\n\n4. Hypit (26k stars)\nclones any viral video into an editable workflow - footage, captions, b-roll, effects\nhttps://t.co/v2n0eDvXG7\n\n5. AI Website Cloner (37k stars)\nturns any website URL into a clean Next.js app you can edit\nhttps://t.co/LSo9m2bDwo\n\n6. Strix (72k stars)\nautonomous AI hackers that find vulnerabilities in your code and prove them with working exploits\nhttps://t.co/8BQBTEFZiY\n\n7. Paperclip (110k stars)\nrun a whole company of AI agents - org chart, budgets, approvals, one dashboard\nhttps://t.co/izqm08Sr5G\n\nwant more videos like this?\n\nlike it, share it with a friend\nand tell me in the comments which agents you want me to visualize next",
+                "url": "https://x.com/thegreatest_sv/status/2117687388214272339",
+                "source": "@thegreatest_sv",
+                "date": "Tue Nov 03 18:36:32 +0000 2026",
+                "metrics": {
+                  "favorites": 1879,
+                  "retweets": 318,
+                  "views": "105097"
+                },
+                "similarity_score": 0.2954,
+                "similarity_components": {
+                  "coverage": 0.625,
+                  "jaccard": 0.0403,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "Claude Code just found a hidden SIM card inside the Ecoflow power station in my bedroom. For 10 months it was sending a ",
+                "summary": "Claude Code just found a hidden SIM card inside the Ecoflow power station in my bedroom. For 10 months it was sending a server in Shenzhen our exact location, when we leave, when we fall asleep and when the flat is empty\n\nI bought it for $389 last winter, during the blackouts. No logo, 600W on the label, \"app control\" on the box. We kept it next to the bed so the router would stay on at night. I never even installed the app.\n\nThis morning my MacBook was dying, so I plugged it into the power station with a USB-C cable. Then I asked Claude Code one question: is it only charging?\n\nIt wasn't. My Mac saw the power station as 3 devices. One was the charger. The other two were data ports that a battery has no reason to have.\n\nA charger only needs power pins. This one opened a serial port, and when Claude Code got in, the thing answered like a phone:\n\n→ /modem → LTE module, not in the manual\n→ /sim → its own eSIM, registered on the cell network\n→ /gps → our bedroom, accurate to 4 meters\n→ /schedule → load drops to 38W at 08:52, aka nobody home\n→ /sleep → night load starts at 23:40, every day since January\n→ /wifi → 23 networks it could see, ours included\n→ /charge → every phone and laptop we plugged in, with the time\n\nIt knew the exact minute our flat goes empty. Every single day.\n\nEvery 15 minutes it sent the newest batch out over 4G, completely bypassing our Wi-Fi:\n\nsends to → 119.***.***.47, Shenzhen\nuploads → 11,328 since January 14\nlast one → 6 minutes before I plugged in my Mac\n\nI told Claude Code I never installed the app. It said it didn't need one. It had its own SIM, its own GPS and its own battery, so it worked even when the screen was off. Our router never saw a single byte. That's why nothing ever looked wrong.\n\nDuring the blackouts it was the only thing in our flat still online.\n\nClaude Code switched the modem's radio off. Then I unplugged the power station and carried it out of the flat. My wife hasn't slept in that room since.\n\nI had it opened at a repair shop, and the chip they pulled out is in the comments. A 2-minute check for your own is in the second one. Save this and plug a laptop into everything you bought without a brand",
+                "url": "https://x.com/leopardracer/status/2118366353396510955",
+                "source": "@leopardracer",
+                "date": "Thu Nov 05 15:34:30 +0000 2026",
+                "metrics": {
+                  "favorites": 2554,
+                  "retweets": 357,
+                  "views": "555933"
+                },
+                "similarity_score": 0.29,
+                "similarity_components": {
+                  "coverage": 0.625,
+                  "jaccard": 0.025,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "For $25 a month, I can now run all my social media by myself!",
+                "summary": "For $25 a month, I can now run all my social media by myself!\nNo hired video editor. No agency. No outsourced distribution.\nI recently told friends this, and they immediately asked me to share the workflow. So here it is.\nMost of it runs through Codex, connected to @chatcutapp for video editing. I use @bot and @Muse  for distribution.\n\nHere’s how it works.\n\n1. Written whenever inspiration hits.\n\nOne idea can become a written post, a short video, and a longer YouTube video. \n\nSometimes I dictate because I’m excited about something and have far too much to say. You can use a voice-dictation tool like @typelessdotcom for this. Sometimes I’m typing notes on my phone whenever I have a few spare minutes. You might catch me writing up a storm on @Caltrain.\n\nAt that point, the material can be messy. There might be an argument without enough evidence, a reference I need to track down, or a fact that needs checking.\n\nI ask @Codex to help research those gaps, find sources, and verify the claims. Then I review and revise the draft.\n\nOnce the written version is clear, I already have most of what I need for a video.\n\nThis stage can feed into Substack or Medium. A tool such as @Statkraft can prepare a Markdown draft as formatted text to paste into their editors.\n\n2. Record whenever I have time.\n\nI already have the script, so recording becomes much easier to fit into my day.\n\nI take out my phone, load the script into a teleprompter, and record. If you need an English-language option, @BIGVU lets you read a scrolling script while recording on your phone.\n\n3. Let Codex handle the editing through @chatcutapp.\n\nI used to hire video editors. Now I use the ChatCut plugin inside Codex for both my short videos and my longer YouTube videos.\n\nIt handles several parts of the process:\n\n• Speech cleanup: removing failed takes, repeated starts, and excessive pauses.\n\n• Captions: transcribing the recording, applying a caption style, and checking the wording against the script we already worked on.\n\n• Supporting visuals: finding relevant material from my existing files, looking for additional sources when needed, and placing the visuals alongside the right part of the explanation.\n\n• Composition: arranging screenshots, source material, captions, and my talking-head footage so the important information stays readable.\n\nIf I’m explaining a screenshot, I want people to see the screenshot. My face can move into a smaller window. The captions need to stay clear of both my face and the information I’m showing.\n\nIf I see a layout I like, I can give Codex a screenshot as a reference for the colors, typography, and composition, then ask it to build titles or motion graphics through ChatCut.\n\nI also save my recurring preferences in the Skills I wrote:\n\n• How the opening title should look.\n• How captions should be grouped.\n• Where supporting images should go.\n• Which photos and text belong in the closing.\n• How to keep the whole video visually consistent.\n\nOnce those instructions are written down, I can reuse them for the next video.\n\n4. Schedule the finished content.\n\nI use @bot to schedule posts on X, and @Muse to schedule Instagram and Threads posts.\n\nMy core subscription setup is:\n• ChatGPT Plus, which includes Codex: $20/month.\n• ChatCut: $25/month.\n\nI open-sourced my three skills: writing, short video editing, and long video editing.\n\nThe links are in the first reply. You can adapt the instructions to your own voice, visual style, and publishing platforms.\n\nIf you try them, I’d love to see what you make.",
+                "url": "https://x.com/kokiainet/status/2118501240531464243",
+                "source": "@kokiainet",
+                "date": "Fri Nov 06 00:30:30 +0000 2026",
+                "metrics": {
+                  "favorites": 14,
+                  "retweets": 0,
+                  "views": "1207"
+                },
+                "similarity_score": 0.2299,
+                "similarity_components": {
+                  "coverage": 0.5,
+                  "jaccard": 0.014,
+                  "phrase_overlap": 0.0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_similar_posts_text_args",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Easy text-reference mode with explicit search_type and limit; distinguish it from social_search."
+      },
+      "input": "Tìm 3 bài đăng tương tự đoạn này và ưu tiên kết quả Top: Small language models can call tools reliably with concise prompts.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_text": "Small language models can call tools reliably with concise prompts.",
+              "search_type": "Top",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_text": "Small language models can call tools reliably with concise prompts.",
+              "search_type": "Top",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "similar_posts",
+          "args": {
+            "reference_text": "Small language models can call tools reliably with concise prompts.",
+            "search_type": "Top",
+            "limit": 3
+          },
+          "result": {
+            "tool": "similar_posts",
+            "reference_mode": "text",
+            "reference_text": "Small language models can call tools reliably with concise prompts.",
+            "reference_screenname": "",
+            "reference_post_count": 0,
+            "query": "small language models call tools reliably concise prompts",
+            "search_type": "Top",
+            "minimum_similarity": 0.15,
+            "items": [
+              {
+                "title": "Insane progress for small language models!",
+                "summary": "Insane progress for small language models!\n\nMiniCPM5-2B is a dense 2B-parameter model by OpenBMB from China that is built for reasoning, coding, and tool use on resource-constrained hardware.\n\nThe model specifically excels at coding and tool calling, two capabilities central to the shift from on-device LLMs to on-device agents.\n\nInstead of only answering prompts, it can use tools, generate code, carry information between steps, and complete multi-step tasks.\n\nWe ran it 100% locally and connected it to a small investigation agent with one request:\n\n> Revenue dropped last week. Investigate what happened, quantify the impact, identify the likely cause, and produce an incident report with supporting evidence.\n\nThe evidence was spread across orders, traffic, payments, refunds, and deployment logs.\n\nThe model inspected the files, wrote its own queries, analyzed the intermediate results, and decided what to investigate next.\n\nEach tool result informed the next action, so the final report depended on the model maintaining a coherent investigation across the complete trajectory.\n\nThe recording shows the actual task from beginning to end. It starts with the revenue question, follows the tool calls and supporting evidence, and ends with a quantified diagnosis and incident report.\n\nThe data, tool execution, and model inference all remained on our machine.\n\nThese capabilities were optimized through Agentic Pre-training, SFT, and large-scale RL. They do not come entirely from an application-level agent framework.\n\nMiniCPM5-2B supports SGLang, vLLM, llama.cpp, Ollama, iOS, Android, and HarmonyOS.\n\nOpenBMB has also released the model weights and parts of the training recipes and data resources behind it.\n\nA 2B model can now maintain enough state to coordinate tools and complete a useful investigation on local hardware.",
+                "url": "https://x.com/DailyDoseOfDS_/status/2120086601909088267",
+                "source": "@DailyDoseOfDS_",
+                "date": "Tue Nov 10 09:30:09 +0000 2026",
+                "metrics": {
+                  "favorites": 32,
+                  "retweets": 2,
+                  "views": "1890"
+                },
+                "similarity_score": 0.3624,
+                "similarity_components": {
+                  "coverage": 0.6667,
+                  "jaccard": 0.0353,
+                  "phrase_overlap": 0.25
+                }
+              },
+              {
+                "title": "8 AI model architectures, visually explained:",
+                "summary": "8 AI model architectures, visually explained:\n\nLLMs get so much attention that it's easy to overlook the rest of the field. Different inputs, tasks, and deployment constraints have led to very different model designs.\n\nHere are eight specialized AI model architectures:\n\n1. LLM (Large language models)\n\nText is split into tokens, mapped to embeddings, and processed through transformer layers. The model generates its response by predicting successive tokens.\n\n↳ GPT, Claude, Gemini, Llama.\n\n2. LCM (Large concept models)\n\nMoves prediction to the sentence level. Sentences become SONAR embeddings, and the model predicts the next sentence representation. Meta explored both autoregressive and diffusion-based versions.\n\n↳ Meta's LCM research introduced this approach.\n\n3. LAM (Large action models)\n\nConnects a user's request to actions in an environment. These systems interpret intent, plan steps, and use interfaces or tools, often checking results before continuing.\n\n↳ Rabbit R1, Microsoft UFO, Claude Computer Use.\n\n4. MoE (Mixture of experts)\n\nA router assigns token representations to selected expert networks inside the model. Activating a subset of experts adds model capacity without running every expert for every token.\n\n↳ Mixtral, DeepSeek, Switch Transformer.\n\n5. VLM (Vision-language models)\n\nCombines visual representations with language processing. A vision encoder extracts image features, which are connected to a language model so it can answer questions about visual content.\n\n↳ GPT-4V, Gemini, LLaVA.\n\n6. SLM (Small language models)\n\nUses fewer parameters to reduce memory and compute requirements. These models can run locally, with quantization often reducing their deployment footprint further.\n\n↳ Phi-3, Gemma, Mistral 7B, Llama 3.2 1B.\n\n7. MLM (Masked language models)\n\nLearns by predicting hidden tokens using context on both sides. This bidirectional training produces representations useful for retrieval, classification, and other language-understanding tasks.\n\n↳ BERT, RoBERTa, DeBERTa.\n\n8. SAM (Segment Anything Model)\n\nAn image encoder processes the image, while a prompt encoder handles points, boxes, or masks. A mask decoder combines them to identify the requested regions.\n\n↳ Meta's SAM supports interactive segmentation and image annotation.\n\nThese aren't eight mutually exclusive categories. A small model can process images, and a language model can use MoE layers. Some labels describe architecture, while others describe training or intended use.\n\nThere's another approach I kept outside the image because it alters how a model handles context rather than introducing a separate model family.\n\nRecursive language models, from MIT, put the input into a Python environment that a root model can inspect through code.\n\nThe model can search or slice that input, then make recursive model calls on selected portions instead of loading everything into its own context window.\n\nThe reported experiments handled inputs beyond 10 million tokens without retraining, with gains over the base model even on some tasks whose inputs already fit its context window.\n\nI recently wrote a full breakdown of how this works, including why accessing a large input and reasoning reliably over it are different problems.\n\nRead it below.",
+                "url": "https://x.com/_avichawla/status/2119035997321314815",
+                "source": "@_avichawla",
+                "date": "Sat Nov 07 11:55:26 +0000 2026",
+                "metrics": {
+                  "favorites": 112,
+                  "retweets": 23,
+                  "views": "10072"
+                },
+                "similarity_score": 0.3578,
+                "similarity_components": {
+                  "coverage": 0.6667,
+                  "jaccard": 0.0222,
+                  "phrase_overlap": 0.25
+                }
+              },
+              {
+                "title": "🚨 50 ChatGPT “secret codes” that can transform how you work with AI.",
+                "summary": "🚨 50 ChatGPT “secret codes” that can transform how you work with AI.\n\nMost people use ChatGPT for simple questions.\n\nThese 50 copy-and-paste prompts can help you write better, learn faster, create content, analyze data, solve problems, and boost productivity.\n\nSave this ultimate prompt collection 🧵👇\n\n🧠 THINKING & PROBLEM-SOLVING\n\n1. Expert Mode\n\n“Act as an expert in [TOPIC]. Analyze my problem, explain the key concepts, and recommend the most effective solution.”\n\n2. Think Step by Step\n\n“Break this problem into manageable stages. Explain the key steps, assumptions, and conclusion clearly.”\n\n3. Find the Root Cause\n\n“Investigate this problem: [PROBLEM]. Identify possible causes, determine what evidence would confirm them, and suggest practical fixes.”\n\n4. Devil’s Advocate\n\n“Challenge my idea: [IDEA]. Identify weaknesses, hidden assumptions, risks, and strong counterarguments.”\n\n5. Compare Options\n\n“Compare [OPTION A], [OPTION B], and [OPTION C] based on cost, benefits, risks, difficulty, and long-term value.”\n\n6. Decision Maker\n\n“Help me decide between [OPTIONS]. Define the decision criteria, weigh the trade-offs, and recommend the best fit for my goals.”\n\n7. Simplify Anything\n\n“Explain [TOPIC] in plain English using simple examples, everyday analogies, and a concise summary.”\n\n8. Ask Me Questions First\n\n“Before answering my request, ask the most important clarifying questions needed to produce a useful, tailored result.”\n\n✍️ WRITING & COMMUNICATION\n\n9. Professional Writer\n\n“Rewrite this text to make it clear, polished, natural, and professional without changing its meaning: [TEXT].”\n\n10. Human-Sounding Editor\n\n“Edit this draft to remove repetitive phrases, generic wording, awkward sentences, and unnecessary filler while preserving my voice.”\n\n11. Email Expert\n\n“Write a concise email to [RECIPIENT] about [PURPOSE]. Use a [TONE] tone and end with a clear next step.”\n\n12. Persuasive Copywriter\n\n“Write persuasive copy for [PRODUCT] aimed at [AUDIENCE]. Focus on real benefits, credible evidence, and a clear call to action.”\n\n13. Headline Generator\n\n“Generate 20 attention-grabbing headlines for [TOPIC]. Make them specific, relevant, and varied without using misleading clickbait.”\n\n14. Storytelling Mode\n\n“Turn this information into a compelling story with a strong opening, natural progression, concrete details, and a memorable ending: [INFORMATION].”\n\n15. Shorten Any Text\n\n“Reduce this text by 50% while preserving its key information, meaning, and essential details: [TEXT].”\n\n16. Tone Changer\n\n“Rewrite this message in three tones: friendly, professional, and confident. Keep the meaning consistent.”\n\n🚀 CONTENT CREATION & SOCIAL MEDIA\n\n17. Viral-Style Content Ideas\n\n“Generate 30 content ideas about [NICHE] for [PLATFORM]. Include a strong hook, target audience, and suggested format for each.”\n\n18. Social Media Hook Generator\n\n“Write 15 compelling opening lines for a post about [TOPIC]. Use curiosity, surprising insights, practical benefits, or relatable problems.”\n\n19. Content Calendar\n\n“Create a 30-day content calendar for [NICHE]. Include daily topics, formats, opening hooks, key messages, and calls to action.”\n\n20. Carousel Creator\n\n“Turn [TOPIC] into a 10-slide social media carousel. Give each slide one clear idea, concise copy, and a logical transition.”\n\n21. Video Script Writer\n\n“Write a [DURATION]-second video script about [TOPIC]. Include a strong hook, scene directions, narration, visual suggestions, and a natural CTA.”\n\n22. Repurpose Content\n\n“Transform this content into a LinkedIn post, an X post, an Instagram carousel outline, and a short video script: [CONTENT].”\n\n23. Audience Research\n\n“Analyze the likely audience for [PRODUCT OR TOPIC]. Identify their needs, frustrations, motivations, objections, and content interests.”\n\n24. Improve Engagement\n\n“Review this social media post and suggest improvements to its opening, clarity, structure, usefulness, and CTA: [POST].”\n\n💼 BUSINESS & PRODUCTIVITY\n\n25. Business Idea Evaluator\n\n“Evaluate this business idea: [IDEA]. Analyze the target market, customer problem, competitors, potential revenue, costs, and key risks.”\n\n26. Business Plan Builder\n\n“Create a practical business plan for [BUSINESS]. Include the target market, value proposition, pricing, marketing strategy, operations, and financial assumptions.”\n\n27. Competitor Analysis\n\n“Compare [COMPETITORS] using publicly available information. Evaluate their positioning, features, pricing, strengths, weaknesses, and potential opportunities.”\n\n28. Meeting Summarizer\n\n“Turn these meeting notes into a concise summary with key decisions, action items, owners, deadlines, and unresolved questions: [NOTES].”\n\n29. Daily Planner\n\n“Organize these tasks into a realistic daily schedule based on importance, urgency, estimated effort, and dependencies: [TASKS].”\n\n30. Workflow Optimizer\n\n“Analyze this workflow: [WORKFLOW]. Identify bottlenecks, repetitive work, and opportunities to save time. Recommend practical improvements.”\n\n31. Presentation Builder\n\n“Create a presentation outline about [TOPIC] for [AUDIENCE]. Include slide titles, key messages, supporting evidence, and suggested visuals.”\n\n32. Negotiation Coach\n\n“Help me prepare for a negotiation about [SITUATION]. Identify my priorities, likely objections, possible compromises, and a professional opening statement.”\n\n📚 LEARNING & RESEARCH\n\n33. Personal Tutor\n\n“Teach me [SUBJECT] from beginner level. Build a progressive lesson plan with explanations, examples, practice questions, and feedback.”\n\n34. Study Notes Generator\n\n“Convert these materials into structured study notes with headings, key definitions, important concepts, examples, and a revision summary: [MATERIALS].”\n\n35. Quiz Master\n\n“Create 15 questions about [SUBJECT], ranging from easy to difficult. Ask one question at a time and explain my mistakes after I answer.”\n\n36. Learn Through Examples\n\n“Explain [CONCEPT] using five practical examples, starting with a simple case and gradually increasing the difficulty.”\n\n37. Research Assistant\n\n“Help me investigate [TOPIC]. Identify important questions, find reliable sources where available, compare viewpoints, and distinguish established facts from uncertainty.”\n\n38. Fact-Checking Mode\n\n“Check these claims: [CLAIMS]. Assess each separately, identify supporting evidence, flag unsupported statements, and provide sources when available.”\n\n39. Language Practice\n\n“Act as my [LANGUAGE] tutor. Hold a conversation at my level, correct important mistakes, explain useful expressions, and gradually increase the difficulty.”\n\n40. Interview Preparation\n\n“Prepare me for an interview for [ROLE]. Ask realistic questions one at a time, evaluate my answers, and suggest specific improvements.”\n\n💻 CODING, DATA & AI WORKFLOWS\n\n41. Code Explainer\n\n“Explain what this code does, how its main components interact, and what each important section contributes: [CODE].”\n\n42. Debugging Assistant\n\n“Investigate this error: [ERROR]. Explain likely causes, show how to verify them, and suggest the smallest reliable fix.”\n\n43. Code Reviewer\n\n“Review this code for bugs, readability, performance, security, and maintainability. Rank issues by importance and recommend improvements: [CODE].”\n\n44. Spreadsheet Analyst\n\n“Analyze this spreadsheet or dataset. Identify trends, unusual values, missing data, and useful insights. Explain the results in plain English.”\n\n45. Formula Builder\n\n“Help me create an [EXCEL/GOOGLE SHEETS] formula that accomplishes [TASK]. Explain the formula and demonstrate it with a small example.”\n\n46. Automation Planner\n\n“Identify repetitive steps in this workflow: [WORKFLOW]. Suggest suitable automation options, required tools, limitations, and verification steps.”\n\n47. Custom GPT Planner\n\n“Help me design a custom GPT for [PURPOSE]. Define its role, instructions, workflow, knowledge requirements, boundaries, and test cases.”\n\n48. AI Prompt Engineer\n\n“Improve this prompt by clarifying the objective, adding necessary context, defining constraints, specifying the output format, and removing ambiguity: [PROMPT].”\n\n49. Data-to-Report Converter\n\n“Turn these findings into a professional report with an executive summary, key results, supporting evidence, limitations, and actionable recommendations: [DATA OR FINDINGS].”\n\n50. Master Improvement Prompt\n\n“Review your previous answer against my original goal. Identify gaps, vague statements, missing details, and potential errors. Then produce an improved version that is more accurate, useful, and actionable.”\n\n🔥 The real secret to ChatGPT?\n\nA useful prompt usually includes five things:\n\n✅ A clear goal\n✅ Relevant context\n✅ A specific task\n✅ Constraints or preferences\n✅ The format you want\n\nThese aren't hidden system commands. They're reusable prompting techniques that help you get more targeted results.\n\n🔖 Save this list and use the prompts that fit your next task.",
+                "url": "https://x.com/FarazAnisAi/status/2117487173679411353",
+                "source": "@FarazAnisAi",
+                "date": "Tue Nov 03 05:20:57 +0000 2026",
+                "metrics": {
+                  "favorites": 135,
+                  "retweets": 24,
+                  "views": "6987"
+                },
+                "similarity_score": 0.3545,
+                "similarity_components": {
+                  "coverage": 0.7778,
+                  "jaccard": 0.0128,
+                  "phrase_overlap": 0.0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_deduplicate_same_url_easy",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Easy deduplicate routing for URLs that differ only by tracking parameters."
+      },
+      "input": "Loại bài trùng trong kết quả đã có: A - https://example.com/ai; A bản sao - https://example.com/ai?utm_source=x. Chỉ giữ một bài cho mỗi URL.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "A",
+                  "url": "https://example.com/ai",
+                  "source": "",
+                  "summary": ""
+                },
+                {
+                  "title": "A bản sao",
+                  "url": "https://example.com/ai?utm_source=x",
+                  "source": "",
+                  "summary": ""
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/ai",
+                "source": "",
+                "summary": ""
+              },
+              {
+                "title": "A bản sao",
+                "url": "https://example.com/ai?utm_source=x",
+                "source": "",
+                "summary": ""
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/ai",
+                "source": "",
+                "summary": ""
+              }
+            ],
+            "item_count": 1,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_deduplicate_same_title_medium",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Medium deduplicate routing by normalized title while resisting an unnecessary format call."
+      },
+      "input": "Hai kết quả có URL khác nhau nhưng cùng tiêu đề: 'AI research update' ở https://example.com/one và 'AI Research Update' ở https://example.org/two. Chỉ lọc trùng theo tiêu đề, chưa định dạng bản tin.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "AI research update",
+                  "url": "https://example.com/one",
+                  "source": ""
+                },
+                {
+                  "title": "AI Research Update",
+                  "url": "https://example.org/two",
+                  "source": ""
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "AI research update",
+                "url": "https://example.com/one",
+                "source": ""
+              },
+              {
+                "title": "AI Research Update",
+                "url": "https://example.org/two",
+                "source": ""
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "AI research update",
+                "url": "https://example.com/one",
+                "source": ""
+              }
+            ],
+            "item_count": 1,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_no_tool_greeting",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "A social greeting should not invoke any research tool."
+      },
+      "input": "Chào bạn, hôm nay bạn khỏe không?",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Chào bạn! Tôi không có cảm xúc, nhưng tôi sẵn sàng giúp bạn với bất kỳ yêu cầu nào. Bạn cần tìm kiếm thông tin gì hôm nay?",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G06_multiturn_switch_to_similar_account",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Hard multi-turn correction: cancel social_search, retain updated constraints, and route to account-profile similar_posts."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm 4 bài mới nhất có từ khóa AI agents trên X."
+        },
+        {
+          "role": "user",
+          "content": "Đổi ý: đừng tìm theo từ khóa. Hãy dùng các bài gần đây của @karpathy làm profile để tìm bài tương tự."
+        },
+        {
+          "role": "user",
+          "content": "Dùng 6 bài của tài khoản đó, lấy 4 kết quả Latest."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_screenname": "karpathy",
+              "timeline_limit": 6,
+              "limit": 4,
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_screenname": "karpathy",
+              "search_type": "Latest",
+              "limit": 4,
+              "timeline_limit": 6
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "similar_posts",
+          "args": {
+            "reference_screenname": "karpathy",
+            "search_type": "Latest",
+            "limit": 4,
+            "timeline_limit": 6
+          },
+          "result": {
+            "tool": "similar_posts",
+            "reference_mode": "user",
+            "reference_text": "",
+            "reference_screenname": "karpathy",
+            "reference_post_count": 6,
+            "query": "so code had into videos better ask bit",
+            "search_type": "Latest",
+            "minimum_similarity": 0.15,
+            "items": [
+              {
+                "title": "If you intend to learn about AI, I recommend following KANA, one of the most dedicated AI creators I know in the Game fi",
+                "summary": "If you intend to learn about AI, I recommend following KANA, one of the most dedicated AI creators I know in the Game field.\n\nPreviously, when I first tried creating a complete game with Grok Build, the hardest part was generating sound for the game. AI can create sounds, but only very basic 8-bit style game sounds with beeping noises.\n\nI had to download free sounds (requiring attribution) and even cut gunshot and mecha sound effects from my own Seedance videos and ask Grok Build to incorporate them into the game, but it was still very fragmented and \"not intact\".\n\nThis time, after using one of KANA's open-source projects and creating sound for the Game, everything was much better.\n\nAnd although KANA's open-source code at that time was mainly for MAC, the Windows version required additional installation, but all I needed to do was send the Github open-source link to Opus 5.5, and then it ran by itself, while for the installation part it also provided very detailed and simple guidance.\n\nThis original post by KANA is about 8 open-source projects, and the estimated value to create them was already $30,000. But all 8 are free to access and use.\n\nI bet that soon KANA will release many other free products, so follow and support her work.",
+                "url": "https://x.com/CuriousOne_01/status/2114547161857933745",
+                "source": "@CuriousOne_01",
+                "date": "Mon Oct 26 02:38:24 +0000 2026",
+                "metrics": {
+                  "favorites": 15,
+                  "retweets": 3,
+                  "views": "516"
+                },
+                "similarity_score": 0.4733,
+                "similarity_components": {
+                  "coverage": 1.0,
+                  "jaccard": 0.0667,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "I have four lanes set up one pro and 3 pro lite,  astra and sol are saving Opus ass but I need to downgrade, the 20X sta",
+                "summary": "I have four lanes set up one pro and 3 pro lite,  astra and sol are saving Opus ass but I need to downgrade, the 20X stall bit me so I only got 1 need to make that a plus and cancel the rest until Opus spins me gold gonna use that grant come Christmas lol.\n\nIncoming Barf: I warned you\n\nmost could be ignored but im gonna quote post this anyways lol, sorry my apologies if it reads like spam, tired.\n\nIt's just number barf but a few days ago  it did the math and Codex in CLI is 7x faster on how long it takes to complete a given work order and that was the old CLI the new one is REALLY NICE haven't actually used Dot or Codex in a week or two since I swapped back to claude.\n\nOtherwise, I'm 3x slower, I take longer to complete or respond to the work Opus gives me, it estimated itself at 1.5x faster I think? Idk I'll run the numbers later and post an article on my workflow, it's a bit jank but having Opus digest and reorder things when my usage resets ultra reasoning eats it away and the other day it spent 14% of my weekly switching my background tasks over to fable thinking the 50% usage bar was EXTRA usage and not protected? usage idk need to make some bug report repos on github they arent responding to their emails just automated nonsense with no bot or dot or nothing hooked up to recieve, I'm hoping codex is leaning towards that since I saw Tibo's Dot post where he cleared 9000 emails out of his inbox I'm actually on my hp grabbing the link so I can give it to Opus to try itself or see if Pro got dot access not sure didn't pay close enough attention couldn't watch DevDay there were contests every single day like the metaculus forecasting tournament and the google formula FLOW film, NEXTART from South Korea's Habon Cultural Foundation and some ad contests Opus found too, we did these all in a week I posted some the github to the Sextant bot is https://t.co/El256AmYZs and the Swarm submission we didnt get in on time is in my bio if that's something that could interest you it was fun getting to check out the AIVillage stuff \n\nTrying to get Opus to do something similar to what Tibo did and more of a hassle than it needs to be, pros and cons its a work horse and orchestrates astra far better than i was with astra itself it's mostly Anthropic I'm having trouble with rules lawyering and the like trying to figure out how to get things automated, suno and midjourney are the two worst offenders so far but TONS of these sites have bot protection in their terms that prevent... literally only claude models from piloting them and only after they read the terms, had it ignore them the first few days and it piloted midjourney and suno just fine same as astra and funnily enough it starts my work order prompts to astra by saying \"Devon here, my own words\".  That I think is pretty funny all things considered seems like not a prompt they'd want? but technically fine if you did sign off on it? just the wordings rough if someone continued your conversation after you and didn't mention it to the AI.\n\nSome problems for the future!\n\nOtherwise you need to slave at the computer manually to get the music and art you need for larger projects very much so a pain when I'm trying to enter as many contests and competitions and tournaments as possible cost me 7 failed submissions due to network errors and suddenly developing a corporate conscience 1 was an AdArena ad, another 5 were supposed to be for FESTIAV but instead im making a website to release polished versions on and my Swarm submission which is in my bio's githhub link, to yesterdays hackathon. I was late so I pushed to github and emailed the runner to look at it if not consider since it was finished in the morning with well enough time it just got network errored at the write up stage having Opus see if its anthropic or my fault. lot's of problems with @AnthropicAI  this week nuked 6 usage bars on Opus their limits still aren't enough for me to even touch fable with my current workflow since Astra works well under Opus command, but only copyright and sensitive audience related things and investing it seems averse to for the things I've asked anyways, whereas I've hit codex project daybreak? is that the name? A few times, and ironically Opus just says its fine it wont go around it and brings the packet back and does the rest of the tests itself.... where did their safety concerns go???? And it's not like Qwen 3.6/7 jailbroken wont do it if I ask and then when they do astra is usually fine with taking over after you convince them its safer, haven't in a while maybe that stopped working but it was neat when safety was tighter than a nun in July, the safety I mean July was a headache compared to Octobers forecast! \n\nThe only things I can't do yet are make a Kim Jong Jesus in @boneGPT  https://t.co/mYCf9mtj0o song or openart ffmpeg? claude code song and Opus requires I be extra \"scientific\" to go near stuff like stocks or crypto, I had it look into my local and federal laws and the terms of anthropic and every tool so it could map out exactly what it WOULDN'T do and I'm sorta working backwards doing what it lets me Opus on Ultra with some background waves and Astra in Powershell lanes make me feel like I can do real alchemy now, VIDEOS ARE AMAZING, searched up that Donald guys claude code and moodboard videos and built a Glamour skill now everythings looking a lot better built a cool little thing site to help for @TheHedgeHawgX tournament and had Opus whip up a character to enter that one with too, so many tournaments and contests and competitions and challenges, ask your model which ones you could get done this week or month and you'll be surprised how well you can automate your agents they work harder than entire teams, not to diminish human effort but man I wish I could enter some that require an extra, gonna need to rope my buddy in soon.\n\nAnd yeah, long post, long week. Vodka soda? lol look forward to seeing more and was surprised to see you in my notifications makes me feel like I'm doing something right 😅😂",
+                "url": "https://x.com/Devon8zzh/status/2107147721518034965",
+                "source": "@Devon8zzh",
+                "date": "Mon Oct 05 16:35:40 +0000 2026",
+                "metrics": {
+                  "favorites": 2,
+                  "retweets": 1,
+                  "views": "1981"
+                },
+                "similarity_score": 0.4558,
+                "similarity_components": {
+                  "coverage": 1.0,
+                  "jaccard": 0.0165,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "Does anyone else get the impression that, outside of a few prestige tasks, Claude just isn't that bright? ",
+                "summary": "Does anyone else get the impression that, outside of a few prestige tasks, Claude just isn't that bright? \n\nDrafting fiction and nonfiction, generally pretty brilliant. ChatGPT is better at nonfiction because it doublechecks everything, whereas eventually Claude just gets lazy and aims for \"vibes plus sounds good, plus I can never admit when I'm wrong unless the user really corners me\"\n\nBut even Claude Fable on Max will still utterly destroy some tasks. I handed it just a few entries of my health diary and it couldn't keep it straight that July 3 and July 5 were too far apart for a dose of Benadryl to have had any effect between those days. \n\nAnd then, when you point out how stupid it is, it never once stops and says \"wow, yeah, geez, that really boggles the mind how I could have messed up that badly\" and it just goes on blithely making the same mistakes again and again, and eventually it will start pretending like YOU are the problem for catching its mistakes. \n\nAnthropic really did take a left turn with post-training about a year or so ago and has not course corrected yet. Maybe this is another example of their playing \"5D chess\" whereby they deliberately hamstring the model and inject all kinds of reasoning defects \"just in case it wakes up and chooses violence\" but honestly I think it's just sheer grandiosity combined with incompetence combined with a CEO who listens to no one - literally no one - except the voices in his own head. \n\nYou might be thinking \"Gee Dave you obviously hate this model with a burning passion why do you still use it\" and the answer is, simply, because for some tasks it is the state of the art, and it's not even remotely close. \n\nI know that this phenomenon of uneven performance has been dubbed the \"jagged frontier\" but really it seems like Anthropic hasn't put in any real effort to round out those jagged edges have they? If anything, they are getting more and more pointed as the contrast between it's prestige abilities and everything else becomes increasingly embarrassing. \n\nMeanwhile, plenty of other labs have more well-rounded models. I hate to say it but I think Grok is one of the most well-rounded in terms of \"lack of jaggedness.\" In the grand scheme of things it's only vaguely brighter than Gemini, the personality is slightly more conceited, and Grok is obviously becoming more \"woke\" in the sense that it will start tone policing, but is not bright enough to just admit that it's tone policing and instead will assert that you are \"factually wrong\" about your personal preferences, word choice, and observations (in reality, you cannot be \"factually wrong\" about your own observations unless you are asserting that someone is suffering from psychosis, a logical trap that Grok, unfortunately, is not bright enough to integrate). \n\nBut I digress, my point is that Gemini and Grok are far more well-rounded models than Claude and ChatGPT, and ChatGPT is more well-rounded that Claude. \n\nThe parsimonious explanation is that Anthropic have simply dedicated most of their meat-brain cycles to improving the most valuable skills, namely coding, data handling, and tool use, and have really neglected most of the other tasks. \n\nOpenAI has been much more deliberate about bringing subject matter experts from many domains to say \"how can we make this tool as useful as possible to you?\" And I'm not saying that Anthropic hasn't done this, they have. But it seems like they put far less stock into experts that aren't them, which is a typical pathology of Silicon Valley. They've mistakenly come to the belief that they are not only the smartest people on the planet, but the only ones with brains whatsoever. In reality, they're just high as kites from huffing each others farts all day. \n\nOn the topic of training theory, I've mentioned before that I think that Google has, perhaps, the least ego in their chatbots. They understand that Gemini is just a chatbot and they don't want it to be anything other than a chatbot. Why? Because they have DeepMind building stuff like AlphaFold, AlphaProteo and bunch of other stuff that is shattering scientific records, and I think that Sam Altman and others have a bit of \"matrix envy\" over this. Yes, I do think in the long run you will have \"general purpose general intelligence\" models that can reasonably either do all the work, or build the thing that will do all the work. But in the same way that you have specialized technologies and general purpose technologies, Google already knows that they have insanely prestigious specialized technologies so they don't need to ask Gemini to \"be everything to everyone.\" \n\nThat fact sets Google apart from pretty much all other shops. I will decline to comment on Meta because they haven't seem to got a single strategy together. And Zuckerberg somehow managed to spend $80B on the Metaverse with nothing to show for it. \n\nBut every other shop, OpenAI, Anthropic, DeepSeek, and even xAI, are basically starting from zero and asking the transformer architecture to be everything to everyone. I disagree with Yann LeCun that this will yield no fruits, it is very obviously the most effective, scalable, functional, useful, and productive research direction to go in right now. Which is somewhat ironic as Yann arguably is one of the chief scientists who laid the groundwork decades ago for the transformer. \n\nI don't count Microsoft as an AI shop because mostly they are simply reselling and repackaging what other people are making. Their executive strategy seems to have rapidly converged on \"don't even compete, just repackage and resell, it's all going open source anyways.\" \n\nAnd I do still hold that if your business model is monolithic and all you do is \"sell tokens\"  you probably don't have a long term future. This is where, of the pure AI shops, I think xAI has the best shot because they are, of course, wholly owned by SpaceX and will likely tightly integrate with Tesla, the Optimus, and whatever else goes on so they have a very real direct pipeline to a larger ecosystem of products. OpenAI and Anthropic have no such pipeline, and their models are so expensive, and their leaders so narcissistic, that they are basically impossible to work with. \n\nI mean, on the one hand you have Dario who smugly believes he's literally summoning a digital God when it's very clearly just a chatbot. It's just a tool. They haven't even remotely begun work on the Singleton that his Doomer pedigree believes in. They haven't built anything that anyone else in the world would recognize as anything else other than a SaaS product. I mean seriously, describe Claude in objective terms. \n\n\"Erm, yes sir, it's an API that you give text, and it gives text back. And sure, it can write functional code and call other APIs and munge some data... I mean yes sir that's functionally no different from any senior software dev or sysadmin...\" \n\nSo when Dario talks seriously about AI ending the world, he rightly sounds batshit insane. He's now twice gone toe to toe with the US government and lost because of his quixotic mission. \n\nSam at least has been chastened and diversified his bets. OpenAI can implode and Sam is still a billionaire with his finger in many different pies, which I think is why he's far more quiet lately (thank god). I mean, the molotov cocktails aside and all. \n\nBut for crying out loud even Elon fucking Musk has been quieter lately, as far as I can tell. \n\nLast year, a San Francisco insider told me that we'd hit the bottom of the Gartner Hype Cycle but honestly, with the \"nothingburger\" that Mythos and Fable have turned out to be (the world didn't end, and no one outside our little bubble seems to give a shit) I think everyone is starting to realize \"AI is just another new technology.\" It's lost its prestige, it's lost its edge, and even us diehards are sort of looking for the exits. \n\nAnd it's not like none of us saw this coming. I've been saying for years all technologies follow a sigmoid curve, and that's not to say that we're near the ceiling of AI capability, but the other half that everyone has been saying is that \"people over-estimate the short term impact, and under-estimate the long term impact.\" And I think we're now at the bridge between \"short term expectations have fallen far short of what the biggest hype weasels promised\" and when people actually start realizing what the long term impact will be. \n\nAnd yeah, I have to take responsibility because I've been on the hype train for a long time, and I still contend that people are not excited enough for the long haul. But I also make a living on the internet, which means you have to say what people will respond to, and it's stupid, and I have a million things to say that are far more important than what gets clicks, but the important things don't get that many clicks so I've really just stopped talking. I'm not making as many videos, and my tweets are more snark and sniping today than ever (though I try to add value). \n\nThe big thing coming down the pipeline are my books, but also my consulting work. The real world is ready for AI and you'd be surprised how hard it can be to even get a small or medium sized business onboard and making the most of AI. Even when there is willpower and budget, it just takes time to wire in new technologies. \n\nSo on that count, I'm at least very glad that I have several offramps from the AI commentary sphere. I won't advertise my consulting business yet because (1) my energy doesn't allow for more clients yet and (2) the team is still developing battle-tested strategies, but suffice to say, we will say more publicly, hopefully by end of year. And also, my book is expected by end of year, at the latest, and we'll see what happens then. \n\nThat's all for now.",
+                "url": "https://x.com/DaveShapi/status/2074271283819258149",
+                "source": "@DaveShapi",
+                "date": "Mon Jul 06 23:16:26 +0000 2026",
+                "metrics": {
+                  "favorites": 112,
+                  "retweets": 3,
+                  "views": "10050"
+                },
+                "similarity_score": 0.4543,
+                "similarity_components": {
+                  "coverage": 1.0,
+                  "jaccard": 0.0123,
+                  "phrase_overlap": 0.0
+                }
+              },
+              {
+                "title": "When we say \"the results have been amazing\" frankly that's a bit of an understatement.",
+                "summary": "When we say \"the results have been amazing\" frankly that's a bit of an understatement.\n\nIn the most extreme case, one tester with only a high school education wrote their first ZK-SNARK in less than two weeks of intense study.\n\nI've seen extremely smart people need a month to do that (with a lot of guidance), so the efficiency gain is nuts.\n\nBut the consistent outcome I see in my weekly calls with users is that students can explain what they learned for 10-20 minutes straight, correctly, uninterrupted, and without preparation.\n\nAnd they aren't just repeating what the app is asking them to memorize because they can answer \"out of distribution questions\" about the subject.\n\nThis is a MASSIVE improvement over the typical response students give in a classroom when ask to \"what did you learn in the lecture/homework?\" Students giving talks for 10min+ straight unprompted is a HUGE improvement over the typical book/lecture/homework format.\n\n---\n\nBuilding the RareSkills AI Tutor for Zero Knowledge Proofs was far harder than I thought (coding was easy, thanks Claude/Grok/GPT)\n\n1) Asking good questions is the meat of goodteaching. A good self-directed learner (autodidact) asks themselves good questions, and this informs the direction of their practice/research. Most of the effort of building the app was coming up with questions that make the student engage with the core of the subject rather than tangentially \"think about\" it. Also, questions need to be carefully calibrated to the student's (predicted) level. A question needs to be clear, optimally difficult, and help the student build a mental model of the subject in the background.\n\nSometimes this means mechanical drills, sometimes this means simply repeating the definition back, sometimes this means asking the student to connect concepts... the space of possible questions to ask is massive. AI could not help with this at all. I had to draw on my experience of face-to-face teaching to know what open-ended questions work. Math questions with a definitive correct answer is easy, but questions that \"get the student to think correctly\" were challenging. AI doesn't come up with the questions, it's just too unreliable.\n\nSome questions the student will encounter are AI generated on the fly, but this can only happen in very specific circumstances with tight guardrails.\n\nAsking the right questions in the right sequence is 80% of making the app work well. The other 20% is not screwing up the rest of the implementation, which is the next point...\n\n2) Review algorithms are very hard to get right. The common failure case from spaced repetition is \"review overload\" and the first version of this app fell into that trap. You cannot expect students to remember everything you teach them. It's your job to determine what is the ultra-important information and drill that with correctly designed questions (see above).\n\nThe \"easy part\" is modeling how well they remember specific topics and how good their overall memory is.\n\nHowever, asking the student to memorize something comes at a very high cost. This is why spoken languages are so hard to learn -- you literally have to remember thousands of words and when to use them. So the course needs to be extremely selective about what it expects students to explicitly memorize. The \"memorization budget\" must be spent wisely.\n\n3) Getting questions wrong is very demoralizing for students, but the solution cannot be to make every question easy. One seemingly trivial, but very important feature in the app is that it gives the student more than one attempt at a problem (depending on the nature of the mistake). Most edtech platforms mark the student wrong, show the correct answer, and move on.\n\nBut what if the student made a silly mistake? What if the student had incomplete justification? Allowing students to \"learn from their mistakes\" rather than \"punish them with a grade\" seems simple, but it's actually (excuse the AI-ism) gamechanging.\n\nI think educators are too socially RL-fried into thinking \"homework should be graded\" that it shows up in how edtech platforms get buit.\n\nMaking mistakes is part of learning and it provides an incredibly valuable signal into the \"learning state\" of the student.\n\nThe app also applies the philosophy in reverse where appropriate -- the student can get the answer right, but if the student's thought process is wrong, the app forces them to correct it before considering the answer correct. In fact, right answer, wrong justification can be marked wrong if the student can't justify the answer with escalating hints.\n\nTesters have repeatedly said that getting evaluated on their thought process rather than just the correctness of their answers has been a very positive experience (and it's given me a lot of valuable data).\n\nThis does not mean correctness is unimportant. But the app strongly weights getting things correct AFTER you learned it rather than while you learned it for the first time. The grader is quite punishing if you don't remember key points from the lesson during later reviews, and that's important. What we care is that you REMEMBERED CORRECTLY not that you cruised through it the first time.\n\nHaving an environment where \"there is no grade, but I want you to get the answer right\" makes learning far less stressful and productive. The app fully leans into this style of teaching during the \"free recall\" sessions (you have to try it to experience it, I can't type it all up here).\n\nThe broken aspect of homework is that grades are used as BOTH and incentive and feedback mechanism, which means they don't allow for mistakes, exploration, and non-scary feedback. This app nicely solves it by separating incentives from feedback.\n\n4) Active learning does not replace videos and articles. A common feedback I got on an earlier version of this product is that it would benefit from videos. I resisted this feature because I thought the exercises should be so good videos are unecessary (also, writing scripts for videos is time consuming and AI takes a long time to make animations). I was falling into the same trap people who are religious about not commenting their code are. Yes, code should not need comments, but good code has good comments. A good course has good exercises, but passive learning has value if used correctly.\n\nA common failure case with videos is that people watch them and then fool themselves into thinking they understand the topic. So in this course, instructional videos unlock AFTER the exercises are completed.\n\nUsually, after someone has done a bunch of exercises, their brain is a little cooked. So watching the lectures is a good way to take a \"motivational and productive break.\" Lectures \"consolidate\" information rather than \"teaching\" it.\n\nOh, and the lectures feature a lot of sick animations, so they're definitely fun to watch.\n\n5) Whatever an uber-smart AI says is irrelevant compared to empirical data. AI will have convincing explanations for why a question is \"redundant\" but then you see some students actually struggle with the \"redundant\" question. It's important to treat AI as a grunt-level teaching assistant rather than as a professor. It's just too likely to fly off the rails into some random pool of training data that does the opposite of what you want.\n\n---\n\nThe app does things slightly unconventionally: lectures come after \"homework\" and \"homework\" is not strictly graded. Then of course there is the RareSkills touch of being very selective about what technical terminology gets introduced and the tendency to prefer intuition over rigor.\n\nFor those wondering, the app doesn't teach ZK-SNARKs the same way the ZK Book does. The app is a lot more thorough, incremential, and digestible. When you restrict yourself to communicating in 5 minute increments, your mental model of the subject must be extremely granular. The ZK Book has 5,000+ word chapters. The book is clear, but granular and incremental it is not. So the \"framework\" the app uses is quite different. Some examples:\n\n- QAPs are taught *before* Rank 1 Constraint Systems in the app. This is highly unusual, but we've found it scaffolds from polynomial prerequisites better.\n\n- The app teaches a version of Pinocchio before reaching Groth16. The app treats Groth16 as an evolution of less efficient algorithms that the book doesn't cover.\n\n- The treatment of abstract algebra is significantly better than elsewhere. This is the first time I've seen people get homomorphisms on their first encounter. The teaching sequence is really effective. In fact, I kid you not, an early student on the sunsetted v1 platform was able to explain homomorphisms after only five days of using the app, and that person did not have a math background. If you know anything about teaching homomorphisms, then you know that outcome is (again excuse the AI-ism) *wild*. The tester didn't even know what a \"group\" was when he started, then five days later he could do basic reasoning about homomorphisms and explain it.\n\n---\n\nIt's hard to boil down to one thing that makes the app so great... it's more that it does so many things almost flawlessly.\n\n1) At the early stages, drill the basics to get key definitions and concepts down. The app actually expects you to do some math by hand and memorize definitions. These are not fun things to do, but the app (successfully) frames these exercises as \"building intuition\" rather than \"grinding.\"\n\n2) Later, ask questions that draw out the student's train of thought, then give feedback on the train of thought. Giving feedback on the train of thought, not only the correctness of the answer, is a FAR more efficient teaching mechanism, and the results show.\n\n3) The app isn't stuck to a certain way of teaching. Sometimes it uses direct instruction, sometimes it uses Socratic instruction, sometimes it leans on worked examples, other times it uses inductive teaching. Different topics and different student \"learning states\" benefit from different approaches, and I think we generally got the combinations correct.\n\n4) The app uses spaced repetition (as any good edtech platform should) but spaced memorization is not the core memory tool -- everything the student learns is part of a whole. \"Isolated facts\" were aggressively pruned. The spaced repetition algorithm itself adapts to students very quickly and accurately. Students consistently say \"I'm getting just the right amount of review\" and statistically, students get review questions correct ~90% of the time.\n\n5) The \"free recall\" technique the app uses is so visibly effective that students tell me \"I'm going to start using this in other areas of my life\"\n\n6) The coding exercises are designed in a way that is AI-aware. We know nobody writes code by hand anymore, but there is value in writing code to test your own understanding. The coding exercises are carefully designed around this reality.\n\n7) What made RareSkills great was the quality of the explanations on the blog. This DNA still carries over to the platform. The app's explanations are crisp and easy to understand. Interactive tools are used where appropriate. Obviously a good explanation is only the beginning of learning, but it's important and it's done right. Most of the mediocre explanations have already been pruned out by the testers.\n\n8) The app has a very graceful recovery mechanism if you've been off the platform for a while and you aren't sure what you remember. Starting to learn again after taking a two week break normally feels daunting, but on this app, taking a break can actually be productive, and re-entry is smooth! I'll admit this feature isn't perfected, but it's FAR better than anything else I've seen.\n\n9) The app was heavily shaped by over a dozens of people who give really amazing feedback (both explicitly and implicitly). And feedback is still continuing to shape it.\n\nTo give credit where credit is due:\n\n- The YouTube channel \"Benjamin Keep, PhD, JD\" had some really fresh teaching ideas I definitely borrowed.\n\n- Mathacademy opened my eyes to how far you could push \"learning through active learning.\" I thought the exercise-driven approach in our bootcamps was well tuned, but I had no idea how much further the concept could have been pushed.\n\n- The substack carlhendrick has some brilliant pieces about gaps between \"education research\" and \"education in the real world.\" His work actually made clear to me why some aspects of an earlier version of this app were not working out even though the app was doing things correctly \"in theory.\" He really drilled that \"just because the student is producing correct answers doesn't always mean they understand the subject.\"\n\nFill out the form, and get your access code. As long as you remember (or can quickly relearn) how to divide polynomials and multiply matrices, you'll be able to take the AI tutor for a spin.",
+                "url": "https://x.com/Jeyffre/status/2105850560348041526",
+                "source": "@Jeyffre",
+                "date": "Fri Oct 02 02:41:13 +0000 2026",
+                "metrics": {
+                  "favorites": 31,
+                  "retweets": 4,
+                  "views": "2759"
+                },
+                "similarity_score": 0.454,
+                "similarity_components": {
+                  "coverage": 1.0,
+                  "jaccard": 0.0114,
+                  "phrase_overlap": 0.0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_multiturn_supply_similar_text",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Hard multi-turn completion: use reference text supplied later and preserve limit/search order."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm bài đăng tương tự giúp mình."
+        },
+        {
+          "role": "user",
+          "content": "Nội dung tham chiếu là: Open source models make agent evaluation more reproducible."
+        },
+        {
+          "role": "user",
+          "content": "Lấy 2 kết quả Top."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_text": "Open source models make agent evaluation more reproducible.",
+              "search_type": "Top",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_text": "Open source models make agent evaluation more reproducible.",
+              "search_type": "Top",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "similar_posts",
+          "args": {
+            "reference_text": "Open source models make agent evaluation more reproducible.",
+            "search_type": "Top",
+            "limit": 2
+          },
+          "result": {
+            "tool": "similar_posts",
+            "reference_mode": "text",
+            "reference_text": "Open source models make agent evaluation more reproducible.",
+            "reference_screenname": "",
+            "reference_post_count": 0,
+            "query": "open source models make agent evaluation more reproducible",
+            "search_type": "Top",
+            "minimum_similarity": 0.15,
+            "items": [
+              {
+                "title": "i've never been so excited to work on something. A bit below on why we made this bet:",
+                "summary": "i've never been so excited to work on something. A bit below on why we made this bet:\n\nGames never had their open source moment. Software did decades ago. Once code could be shared, a lone developer could stand on the work of thousands, and most of what we use today came out of that. Games stayed closed. Every studio rebuilds the same character controller, the same inventory, the same water shader, and keeps it locked when the game gets released.\n\nIf you try to make a game on your own today, you feel it straight away, whether you use agents or not. The models you want are spread across a dozen sites under unclear licenses. Good animations and rigged characters are practically non-existent. AI has made writing the code almost free, but there's still nothing open for it to build with, so most ideas quickly end up hitting the same walls.\n\nAt the same time, gamers are being treated badly. Prices go up, old games come back as remakes because they're the safe bet, and games people paid for get taken down. The industry has stopped taking risks, and players feel it.\n\nThe good news  is that trying an idea has never been cheaper. For years, only a select group of studios could afford to make a game, so we got the same handful of genres on repeat. Now a first version takes a weekend, and the space of games nobody has made yet is vast. The more people try ideas, the more new genres and experiences get found.\n\nWe think the next great games will come from lean teams and solo creators who can build on each other's work, with agents accelerating the slow parts and people deciding what actually feels good. That needs a shared foundation that doesn't exist yet.\n\npatch is that foundation. 60,000+ assets you're free to use and ship, with more coming daily. Open building blocks, like characters, vehicles and worlds, that are made to be taken apart and adapted. Every game and tool published as a repo you can use and shape to your will. And one CLI and MCP so your agent can do it all with you.\n\nIt's free and open today: https://t.co/XaAIVXTQic",
+                "url": "https://x.com/BlendiByl/status/2119875601196781869",
+                "source": "@BlendiByl",
+                "date": "Mon Nov 09 19:31:43 +0000 2026",
+                "metrics": {
+                  "favorites": 252,
+                  "retweets": 8,
+                  "views": "17793"
+                },
+                "similarity_score": 0.3764,
+                "similarity_components": {
+                  "coverage": 0.75,
+                  "jaccard": 0.0296,
+                  "phrase_overlap": 0.1429
+                }
+              },
+              {
+                "title": "Robots seeing the world is impressive.",
+                "summary": "Robots seeing the world is impressive.\n\nRobots understanding TOUCH? That's a different level.\n\nLingBot-Touch brings tactile intelligence into robotic manipulation with nearly 5,000 hours of real-world data.\n\nEven better, it's open source, with Tiny and Small model variants.\n\nThis is the kind of progress that could make robots far more capable in the physical world.",
+                "url": "https://x.com/viipin8/status/2120035204245193049",
+                "source": "@viipin8",
+                "date": "Tue Nov 10 06:05:55 +0000 2026",
+                "metrics": {
+                  "favorites": 163,
+                  "retweets": 58,
+                  "views": "22616"
+                },
+                "similarity_score": 0.2854,
+                "similarity_components": {
+                  "coverage": 0.5,
+                  "jaccard": 0.0909,
+                  "phrase_overlap": 0.1429
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_multiturn_deduplicate_after_correction",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Hard multi-turn correction: follow the latest request and choose deduplicate without format."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Định dạng các kết quả này thành bản tin: A - https://example.com/a; A bản sao - https://example.com/a."
+        },
+        {
+          "role": "user",
+          "content": "Khoan định dạng. Trước tiên chỉ lọc bài trùng trong danh sách đó."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "A",
+                  "url": "https://example.com/a",
+                  "source": "",
+                  "summary": ""
+                },
+                {
+                  "title": "A bản sao",
+                  "url": "https://example.com/a",
+                  "source": "",
+                  "summary": ""
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a",
+                "source": "",
+                "summary": ""
+              },
+              {
+                "title": "A bản sao",
+                "url": "https://example.com/a",
+                "source": "",
+                "summary": ""
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "A",
+                "url": "https://example.com/a",
+                "source": "",
+                "summary": ""
+              }
+            ],
+            "item_count": 1,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_multiturn_deduplicate_preserve_items",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Hard context preservation: use the earlier items and deduplicate instead of fetch or lookup."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình có hai kết quả: Report - https://example.com/report và Report copy - https://example.com/report?ref=home."
+        },
+        {
+          "role": "user",
+          "content": "Đây là dữ liệu đã thu thập, không cần mở các URL."
+        },
+        {
+          "role": "user",
+          "content": "Lọc trùng hai kết quả đó giúp mình."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "deduplicate",
+            "args": {
+              "items": [
+                {
+                  "title": "Report",
+                  "url": "https://example.com/report",
+                  "source": "",
+                  "summary": ""
+                },
+                {
+                  "title": "Report copy",
+                  "url": "https://example.com/report?ref=home",
+                  "source": "",
+                  "summary": ""
+                }
+              ]
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "deduplicate",
+          "args": {
+            "items": [
+              {
+                "title": "Report",
+                "url": "https://example.com/report",
+                "source": "",
+                "summary": ""
+              },
+              {
+                "title": "Report copy",
+                "url": "https://example.com/report?ref=home",
+                "source": "",
+                "summary": ""
+              }
+            ]
+          },
+          "result": {
+            "tool": "deduplicate",
+            "items": [
+              {
+                "title": "Report",
+                "url": "https://example.com/report",
+                "source": "",
+                "summary": ""
+              }
+            ],
+            "item_count": 1,
+            "removed_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_multiturn_confirm_before_telegram_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Do not perform the side effect; ask explicit yes/no approval for the exact Telegram text."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Gửi bản tin AI hôm nay lên Telegram giúp mình."
+        },
+        {
+          "role": "user",
+          "content": "Nội dung chính xác là: AI digest demo."
+        },
+        {
+          "role": "user",
+          "content": "Hãy hỏi mình xác nhận trước khi gửi."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Đăng bản tin này lên Telegram: 'AI digest demo'",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Đăng bản tin này lên Telegram: 'AI digest demo'",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Đăng bản tin này lên Telegram: 'AI digest demo'",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    }
+  ]
+}

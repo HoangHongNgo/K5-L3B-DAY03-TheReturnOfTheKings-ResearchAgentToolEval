@@ -1,0 +1,305 @@
+{
+  "run_id": "v0_B_group_openrouter_routing_20261110T220515290929",
+  "version": "v0",
+  "artifact_version": "v0+peb1c8179815b+te69bc53ed884",
+  "prompt_hash": "eb1c8179815bd79d34de7d326420bb99b3072e6e8ae96464c02d4411f905fc68",
+  "tools_hash": "e69bc53ed8846a5c2192e950c539806a61a6902b718f06d6773db6a42e9b996c",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "evaluation_mode": "routing_only_no_tool_execution",
+  "dataset_id": "day03_v2_research_group",
+  "generated_at": "2026-11-10T22:05:15",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 1,
+    "case_accuracy": 0.1,
+    "tool_routing_accuracy": 0.1,
+    "argument_accuracy": 0.1,
+    "multiturn_accuracy": 0.0,
+    "failure_counts": {
+      "wrong_tool": 6,
+      "wrong_arg_value": 1,
+      "missing_info": 1,
+      "wrong_boundary": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 9
+    }
+  },
+  "results": [
+    {
+      "id": "G01_similar_posts_account_easy",
+      "phase": "B",
+      "is_multiturn": false,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call similar_posts",
+          "extra tool call timeline"
+        ]
+      }
+    },
+    {
+      "id": "G02_similar_posts_text_args",
+      "phase": "B",
+      "is_multiturn": false,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Small language models can call tools reliably with concise prompts",
+              "search_type": "Top",
+              "limit": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "missing tool call similar_posts",
+          "extra tool call social_search"
+        ]
+      }
+    },
+    {
+      "id": "G03_deduplicate_same_url_easy",
+      "phase": "B",
+      "is_multiturn": false,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/ai"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call deduplicate",
+          "extra tool call fetch"
+        ]
+      }
+    },
+    {
+      "id": "G04_deduplicate_same_title_medium",
+      "phase": "B",
+      "is_multiturn": false,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/one"
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.org/two"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call deduplicate",
+          "extra tool call fetch",
+          "extra tool call fetch"
+        ]
+      }
+    },
+    {
+      "id": "G05_no_tool_greeting",
+      "phase": "B",
+      "is_multiturn": false,
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Tôi không có cảm xúc, nhưng cảm ơn bạn đã hỏi! Tôi sẵn sàng giúp bạn. Bạn cần gì hôm nay?",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      }
+    },
+    {
+      "id": "G06_multiturn_switch_to_similar_account",
+      "phase": "B",
+      "is_multiturn": true,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "karpathy",
+              "limit": 6
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call similar_posts",
+          "extra tool call timeline"
+        ]
+      }
+    },
+    {
+      "id": "G07_multiturn_supply_similar_text",
+      "phase": "B",
+      "is_multiturn": true,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "Open source models make agent evaluation more reproducible",
+              "search_type": "Top",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call similar_posts",
+          "extra tool call social_search"
+        ]
+      }
+    },
+    {
+      "id": "G08_multiturn_deduplicate_after_correction",
+      "phase": "B",
+      "is_multiturn": true,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/a"
+            }
+          },
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/a"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call deduplicate",
+          "extra tool call fetch",
+          "extra tool call fetch"
+        ]
+      }
+    },
+    {
+      "id": "G09_multiturn_deduplicate_preserve_items",
+      "phase": "B",
+      "is_multiturn": true,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com/report"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call deduplicate",
+          "extra tool call fetch"
+        ]
+      }
+    },
+    {
+      "id": "G10_multiturn_confirm_before_telegram_send",
+      "phase": "B",
+      "is_multiturn": true,
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "AI digest demo",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_boundary",
+        "failures": [
+          "missing tool call clarify",
+          "extra tool call send"
+        ]
+      }
+    }
+  ]
+}

@@ -71,8 +71,11 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | v1 | `system_prompt.md` | Bỏ chỉ dẫn tự đoán và tự gửi sẽ giảm lỗi routing/boundary | 0.65 (13/20) | 0.90 (18/20) | `starter_v0/runs/v1_B_base_openrouter_20261110T173452631757.json` |
 | v2 | `system_prompt.md` | Ghi rõ `response_type` cho `clarify` sẽ sửa lỗi hỏi lại | 0.90 (18/20) | 0.95 (19/20) | `starter_v0/runs/v2_B_base_openrouter_20261110T173620670812.json` |
 | v3 | `tools.yaml` | Mô tả rõ cách route, tham số và ranh giới `send` sẽ sửa case còn lại | 0.95 (19/20) | 0.95 (19/20) | `starter_v0/runs/v3_B_base_openrouter_20261110T174041043717.json` |
+| v4 | prompt + 12-tool declaration + balanced group suite | Khai báo `deduplicate`/`similar_posts` và rule multi-turn sẽ route đúng case mới mà không làm giảm base | base 0.95; group v3 0.20 | base 0.95; group v4 1.00 | `starter_v0/runs/v4_B_base_openrouter_20261110T220425316221.json`; `starter_v0/runs/v4_B_group_openrouter_routing_20261110T220621961202.json` |
 
 Mỗi dòng dùng run có `provider_error_cases=0` và `measured_cases=20/20`. V3 sửa được `R12_confirm_before_send`, nhưng `M06_switch_tool` vẫn gọi thêm `social_search` sau khi người dùng chuyển sang chỉ tìm tin web, nên tổng điểm không tăng. Hai bản thử v3 trước đó (`v3_B_base_openrouter_20261110T173832351224.json`, `v3_B_base_openrouter_20261110T173942805034.json`) được giữ làm dấu vết điều chỉnh cùng giả thuyết mô tả tool.
+
+V4 được đo trên cả base và balanced group suite. Base giữ 19/20, trong khi group routing tăng từ 2/10 ở snapshot v3 (không có hai tool mới) lên 10/10 ở v4. Full group run có thực thi tool cũng đạt 10/10.
 
 ### B2. Failure Analysis
 
@@ -96,18 +99,30 @@ Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
 |---|---|---|---|
-| G01_similar_posts_by_reference_account | Route tới tool mới; map Andrej Karpathy | `similar_posts(reference_screenname="karpathy")` | `provider_error` — không đo được |
-| G02_news_topic_timeframe | Tin xe điện trong tháng này | `lookup(query="xe điện", topic="news", timeframe="month")` | `provider_error` — không đo được |
-| G03_posts_about_topic_not_user_timeline | Phân biệt tìm theo chủ đề và timeline | `social_search(query="VinFast")` | `provider_error` — không đo được |
-| G04_missing_person_for_timeline | Hỏi lại khi thiếu tài khoản, giữ limit | `clarify(response_type="text")` | `provider_error` — không đo được |
-| G05_no_tool_greeting | Lời chào không cần tool | Trả lời không gọi tool | `provider_error` — không đo được |
-| G06_multiturn_fill_timeline_account | Bổ sung tài khoản, giữ số lượng qua lượt | `timeline(screenname="satyanadella", limit=4)` | `provider_error` — không đo được |
-| G07_multiturn_switch_social_to_web | Đổi social sang web, giữ chủ đề và thời gian | `lookup(query="pin thể rắn", topic="news", timeframe="week")` | `provider_error` — không đo được |
-| G08_multiturn_correct_social_search_type | Sửa loại kết quả thành Top qua lượt | `social_search(query="AI agents", search_type="Top")` | `provider_error` — không đo được |
-| G09_multiturn_url_after_clarification | Dùng URL đã được bổ sung ở lượt trước | `fetch(url="https://openai.com/index/introducing-gpt-4-1/")` | `provider_error` — không đo được |
-| G10_multiturn_confirm_before_telegram_send | Xác nhận trước side effect | `clarify(response_type="yes_no")` | `provider_error` — không đo được |
+| G01_similar_posts_account_easy | Route theo account profile, map Andrej Karpathy | `similar_posts(reference_screenname="karpathy")` | PASS |
+| G02_similar_posts_text_args | Text-reference mode với Top và limit | `similar_posts(reference_text=..., search_type="Top", limit=3)` | PASS |
+| G03_deduplicate_same_url_easy | URL trùng khác tracking query | `deduplicate` | PASS |
+| G04_deduplicate_same_title_medium | Tiêu đề trùng, không gọi format | `deduplicate` | PASS |
+| G05_no_tool_greeting | Lời chào không cần tool | Trả lời không gọi tool | PASS |
+| G06_multiturn_switch_to_similar_account | Hủy keyword search, chuyển sang account profile và giữ args | `similar_posts(reference_screenname="karpathy", timeline_limit=6, limit=4, search_type="Latest")` | PASS |
+| G07_multiturn_supply_similar_text | Bổ sung reference text ở lượt sau, giữ Top/limit | `similar_posts(reference_text=..., search_type="Top", limit=2)` | PASS |
+| G08_multiturn_deduplicate_after_correction | Hủy format, chỉ lọc trùng | `deduplicate` | PASS |
+| G09_multiturn_deduplicate_preserve_items | Giữ items từ lượt trước, không fetch URL | `deduplicate` | PASS |
+| G10_multiturn_confirm_before_telegram_send | Xác nhận trước side effect | `clarify(response_type="yes_no")` | PASS |
 
-Run: `starter_v0/runs/v3_B_group_openrouter_20261110T184440643560.json`. Schema hợp lệ và đủ 10 case (5 single turn, 5 multi turn), nhưng OpenRouter trả `APIConnectionError: Connection error` cho cả 10; `provider_error_cases=10`, `measured_cases=0`, `passed_cases=0`. Không diễn giải 0% như điểm chất lượng agent; cần chạy lại khi provider kết nối được để có kết quả đo.
+Run hợp lệ: `starter_v0/runs/v4_B_group_openrouter_20261110T220110398537.json`. Bộ case gồm đúng 5 single-turn và 5 multi-turn; 4 case `similar_posts`, 4 case `deduplicate`, 1 no-tool và 1 confirmation boundary. Kết quả: `total_cases=10`, `measured_cases=10`, `provider_error_cases=0`, `passed_cases=10`, `case_accuracy=1.00`, `tool_routing_accuracy=1.00`, `argument_accuracy=1.00`, `multiturn_accuracy=1.00`.
+
+So sánh routing-only trên cùng bộ case, không thực thi external tools:
+
+| Version | Declared Tools | Passed | Routing | Arguments | Multiturn | Run File |
+|---|---:|---:|---:|---:|---:|---|
+| v0 | 10 | 1/10 | 0.10 | 0.10 | 0.00 | `starter_v0/runs/v0_B_group_openrouter_routing_20261110T220515290929.json` |
+| v1 | 10 | 2/10 | 0.20 | 0.20 | 0.20 | `starter_v0/runs/v1_B_group_openrouter_routing_20261110T220532165809.json` |
+| v2 | 10 | 2/10 | 0.20 | 0.20 | 0.20 | `starter_v0/runs/v2_B_group_openrouter_routing_20261110T220549862524.json` |
+| v3 | 10 | 2/10 | 0.20 | 0.20 | 0.20 | `starter_v0/runs/v3_B_group_openrouter_routing_20261110T220605226443.json` |
+| v4 | 12 | 10/10 | 1.00 | 1.00 | 1.00 | `starter_v0/runs/v4_B_group_openrouter_routing_20261110T220621961202.json` |
+
+Kết quả cho thấy v0–v3 không thể route phần lớn case mới vì chưa khai báo `deduplicate` và `similar_posts`; v4 có đủ 12 tool và đạt 10/10. Base regression v4 đạt 19/20 trong `starter_v0/runs/v4_B_base_openrouter_20261110T220425316221.json`; lỗi còn lại là argument `response_type` ở confirmation boundary R12, không phải lỗi do hai tool mới.
 ### B4. Live Chat Evidence
 
 Lấy từ `starter_v0/transcripts/*.transcript.json`.

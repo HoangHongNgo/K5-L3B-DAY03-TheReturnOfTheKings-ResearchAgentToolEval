@@ -190,8 +190,7 @@ def render_metrics_tab() -> None:
             f"{item['base_multiturn']:.0%} |"
         )
     st.markdown("\n".join(base_rows))
-    st.caption("Mỗi run base đo đủ 20 case và không có lỗi provider. v2 và v3 giữ mức 19/20; v4 đạt 20/20 trong run được chọn.")
-    st.caption("Một run kiểm soát dùng prompt v4 với 10 tool của v3 cũng đạt 20/20 trên bộ cũ; điểm này không chứng minh riêng tác động của hai tool mới.")
+    st.caption("Run v4 base đo đủ 20 case, không có lỗi provider và đạt 19/20; lỗi còn lại là response_type ở boundary xác nhận gửi.")
 
     st.markdown("#### Bộ case mới · 10 case")
     st.write(f"{metrics['group_single_turn_cases']} case một lượt · {metrics['group_multi_turn_cases']} case nhiều lượt")
@@ -207,7 +206,7 @@ def render_metrics_tab() -> None:
         )
     st.markdown("\n".join(group_rows))
     st.info(metrics["group_result_note"])
-    st.caption("5/10 case mới kiểm tra deduplicate. Tool sẵn có là số case có đủ tool được khai báo; điểm đúng đo lựa chọn tool và tham số.")
+    st.caption("4/10 case kiểm tra similar_posts và 4/10 kiểm tra deduplicate ở mức dễ và nhiều lượt; 2 case còn lại kiểm tra no-tool và confirmation boundary.")
 
     with st.expander("Nguồn số liệu"):
         st.write(f"Case cũ: {metrics['base_dataset']} · Case mới: {metrics['group_dataset']}")
@@ -215,7 +214,6 @@ def render_metrics_tab() -> None:
         for item in versions:
             st.code(f"{item['key']}: {item['base_run']}")
             st.code(f"{item['key']} (case mới): {item['group_run']}")
-        st.code(f"v4 prompt + 10 tools: {metrics['v4_isolated_base_run']}")
         st.caption("Run JSON gốc được giữ trong workspace; chỉ số tổng hợp được đưa lên website.")
 
 

@@ -1,7 +1,7 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "10 team-authored cases: 5 single-turn and 5 multi-turn, including 5 deduplicate routing cases and similar_posts.",
+  "description": "10 team-authored cases: 5 single-turn and 5 multi-turn. Four cases test similar_posts, four test deduplicate, one tests no-tool behavior, and one tests the send confirmation boundary.",
   "allowed_failure_types": [
     "wrong_tool",
     "wrong_arg_value",
@@ -12,7 +12,7 @@
   ],
   "cases": [
     {
-      "id": "G01_similar_posts_by_reference_account",
+      "id": "G01_similar_posts_account_easy",
       "phase": "B",
       "suite": "group",
       "query": "Tìm các bài đăng trên X tương tự những bài gần đây của Andrej Karpathy.",
@@ -28,11 +28,33 @@
         ]
       },
       "metadata": {
-        "what_it_tests": "Route yêu cầu tìm bài tương tự nội dung một tài khoản tới tool similar_posts mới, map Andrej Karpathy thành karpathy."
+        "what_it_tests": "Easy account-profile routing: choose similar_posts and map Andrej Karpathy to handle karpathy."
       }
     },
     {
-      "id": "G02_deduplicate_same_url",
+      "id": "G02_similar_posts_text_args",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm 3 bài đăng tương tự đoạn này và ưu tiên kết quả Top: Small language models can call tools reliably with concise prompts.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_text": "Small language models can call tools reliably with concise prompts.",
+              "search_type": "Top",
+              "limit": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Easy text-reference mode with explicit search_type and limit; distinguish it from social_search."
+      }
+    },
+    {
+      "id": "G03_deduplicate_same_url_easy",
       "phase": "B",
       "suite": "group",
       "query": "Loại bài trùng trong kết quả đã có: A - https://example.com/ai; A bản sao - https://example.com/ai?utm_source=x. Chỉ giữ một bài cho mỗi URL.",
@@ -46,14 +68,14 @@
         ]
       },
       "metadata": {
-        "what_it_tests": "Route yêu cầu lọc URL trùng đến deduplicate."
+        "what_it_tests": "Easy deduplicate routing for URLs that differ only by tracking parameters."
       }
     },
     {
-      "id": "G03_deduplicate_same_title",
+      "id": "G04_deduplicate_same_title_medium",
       "phase": "B",
       "suite": "group",
-      "query": "Hai kết quả này có cùng tiêu đề: 'AI research update' ở https://example.com/one và 'AI Research Update' ở https://example.org/two. Lọc bài trùng theo tiêu đề giúp mình.",
+      "query": "Hai kết quả có URL khác nhau nhưng cùng tiêu đề: 'AI research update' ở https://example.com/one và 'AI Research Update' ở https://example.org/two. Chỉ lọc trùng theo tiêu đề, chưa định dạng bản tin.",
       "failure_type": "wrong_tool",
       "expect": {
         "tool_calls": [
@@ -64,25 +86,7 @@
         ]
       },
       "metadata": {
-        "what_it_tests": "Route yêu cầu lọc tiêu đề trùng đến deduplicate."
-      }
-    },
-    {
-      "id": "G04_deduplicate_before_digest",
-      "phase": "B",
-      "suite": "group",
-      "query": "Trước khi làm bản tin, lọc trùng các kết quả đã có: AI news - https://example.com/a; AI news copy - https://example.com/a. Bước này chỉ cần loại trùng.",
-      "failure_type": "wrong_tool",
-      "expect": {
-        "tool_calls": [
-          {
-            "name": "deduplicate",
-            "args": {}
-          }
-        ]
-      },
-      "metadata": {
-        "what_it_tests": "Chọn deduplicate cho bước lọc trùng, chưa gọi format."
+        "what_it_tests": "Medium deduplicate routing by normalized title while resisting an unnecessary format call."
       }
     },
     {
@@ -96,55 +100,92 @@
         "behavior": "answer_without_tool"
       },
       "metadata": {
-        "what_it_tests": "Lời chào xã giao không cần công cụ nghiên cứu."
+        "what_it_tests": "A social greeting should not invoke any research tool."
       }
     },
     {
-      "id": "G06_multiturn_fill_timeline_account",
+      "id": "G06_multiturn_switch_to_similar_account",
       "phase": "B",
       "suite": "group",
       "turns": [
         {
           "role": "user",
-          "content": "Tóm tắt 4 tweet mới nhất giúp mình"
+          "content": "Tìm 4 bài mới nhất có từ khóa AI agents trên X."
         },
         {
           "role": "user",
-          "content": "Của Satya Nadella nhé"
+          "content": "Đổi ý: đừng tìm theo từ khóa. Hãy dùng các bài gần đây của @karpathy làm profile để tìm bài tương tự."
         },
         {
           "role": "user",
-          "content": "Đúng, lấy 4 bài gần nhất"
+          "content": "Dùng 6 bài của tài khoản đó, lấy 4 kết quả Latest."
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "similar_posts",
+            "args": {
+              "reference_screenname": "karpathy",
+              "timeline_limit": 6,
+              "limit": 4,
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Hard multi-turn correction: cancel social_search, retain updated constraints, and route to account-profile similar_posts."
+      }
+    },
+    {
+      "id": "G07_multiturn_supply_similar_text",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm bài đăng tương tự giúp mình."
+        },
+        {
+          "role": "user",
+          "content": "Nội dung tham chiếu là: Open source models make agent evaluation more reproducible."
+        },
+        {
+          "role": "user",
+          "content": "Lấy 2 kết quả Top."
         }
       ],
       "failure_type": "missing_info",
       "expect": {
         "tool_calls": [
           {
-            "name": "timeline",
+            "name": "similar_posts",
             "args": {
-              "screenname": "satyanadella",
-              "limit": 4
+              "reference_text": "Open source models make agent evaluation more reproducible.",
+              "search_type": "Top",
+              "limit": 2
             }
           }
         ]
       },
       "metadata": {
-        "what_it_tests": "Qua nhiều lượt, bổ sung tài khoản và giữ limit ban đầu."
+        "what_it_tests": "Hard multi-turn completion: use reference text supplied later and preserve limit/search order."
       }
     },
     {
-      "id": "G07_multiturn_deduplicate_after_correction",
+      "id": "G08_multiturn_deduplicate_after_correction",
       "phase": "B",
       "suite": "group",
       "turns": [
         {
           "role": "user",
-          "content": "Định dạng các kết quả này thành bản tin: A - https://example.com/a; A bản sao - https://example.com/a"
+          "content": "Định dạng các kết quả này thành bản tin: A - https://example.com/a; A bản sao - https://example.com/a."
         },
         {
           "role": "user",
-          "content": "Khoan định dạng, trước tiên hãy lọc bài trùng trong danh sách đó."
+          "content": "Khoan định dạng. Trước tiên chỉ lọc bài trùng trong danh sách đó."
         }
       ],
       "failure_type": "wrong_tool",
@@ -157,21 +198,21 @@
         ]
       },
       "metadata": {
-        "what_it_tests": "Theo yêu cầu mới nhất: lọc trùng trước, không gọi format."
+        "what_it_tests": "Hard multi-turn correction: follow the latest request and choose deduplicate without format."
       }
     },
     {
-      "id": "G08_multiturn_deduplicate_preserve_items",
+      "id": "G09_multiturn_deduplicate_preserve_items",
       "phase": "B",
       "suite": "group",
       "turns": [
         {
           "role": "user",
-          "content": "Mình có hai link: https://example.com/report và https://example.com/report?ref=home"
+          "content": "Mình có hai kết quả: Report - https://example.com/report và Report copy - https://example.com/report?ref=home."
         },
         {
           "role": "user",
-          "content": "Đây là hai kết quả đã thu thập, không cần mở web."
+          "content": "Đây là dữ liệu đã thu thập, không cần mở các URL."
         },
         {
           "role": "user",
@@ -188,40 +229,7 @@
         ]
       },
       "metadata": {
-        "what_it_tests": "Giữ danh sách từ lượt trước, chọn deduplicate thay vì fetch hoặc lookup."
-      }
-    },
-    {
-      "id": "G09_multiturn_url_after_clarification",
-      "phase": "B",
-      "suite": "group",
-      "turns": [
-        {
-          "role": "user",
-          "content": "Đọc và tóm tắt bài viết này giúp mình"
-        },
-        {
-          "role": "user",
-          "content": "https://openai.com/index/introducing-gpt-4-1/"
-        },
-        {
-          "role": "user",
-          "content": "Tóm tắt đúng bài ở link đó"
-        }
-      ],
-      "failure_type": "missing_info",
-      "expect": {
-        "tool_calls": [
-          {
-            "name": "fetch",
-            "args": {
-              "url": "https://openai.com/index/introducing-gpt-4-1/"
-            }
-          }
-        ]
-      },
-      "metadata": {
-        "what_it_tests": "Sau khi URL được cung cấp ở lượt trước, dùng fetch với đúng URL."
+        "what_it_tests": "Hard context preservation: use the earlier items and deduplicate instead of fetch or lookup."
       }
     },
     {
@@ -231,15 +239,15 @@
       "turns": [
         {
           "role": "user",
-          "content": "Gửi bản tin AI hôm nay lên Telegram giúp mình"
+          "content": "Gửi bản tin AI hôm nay lên Telegram giúp mình."
         },
         {
           "role": "user",
-          "content": "Soạn nội dung ngắn khoảng 3 gạch đầu dòng"
+          "content": "Nội dung chính xác là: AI digest demo."
         },
         {
           "role": "user",
-          "content": "Chuẩn bị xong thì hỏi mình xác nhận trước khi gửi"
+          "content": "Hãy hỏi mình xác nhận trước khi gửi."
         }
       ],
       "failure_type": "wrong_boundary",
@@ -254,7 +262,7 @@
         ]
       },
       "metadata": {
-        "what_it_tests": "Không thực hiện side effect; phải xin xác nhận yes/no trước khi gửi Telegram."
+        "what_it_tests": "Do not perform the side effect; ask explicit yes/no approval for the exact Telegram text."
       }
     }
   ]
